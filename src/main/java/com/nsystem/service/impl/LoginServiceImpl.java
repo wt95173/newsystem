@@ -2,6 +2,7 @@ package com.nsystem.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nsystem.mapper.LoginInformationMapper;
+import com.nsystem.mapper.UserMapper;
 import com.nsystem.service.LoginService;
 import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.LoginreturnVo;
@@ -16,6 +17,9 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private LoginInformationMapper loginInformationMapper;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     public LoginreturnVo findByName(LoginVo loginVo) {
         QueryWrapper wrapper=new QueryWrapper();
@@ -23,12 +27,21 @@ public class LoginServiceImpl implements LoginService {
         LoginreturnVo loginreturnVo=new LoginreturnVo();
         if(loginInformationMapper.selectOne(wrapper).getPassword().equals(loginVo.getPassword())){
             loginreturnVo.setState(1);
-            loginreturnVo.setUrl("ddd");
-            return loginreturnVo;
+            switch(userMapper.selectOne(wrapper).getRole()){
+                case 0:
+                    loginreturnVo.setUrl("0");
+                    break;
+                case 1:
+                    loginreturnVo.setUrl("1");
+                    break;
+                case 2:
+                    loginreturnVo.setUrl("2");
+                    break;
+            }
         }
         else{
             loginreturnVo.setState(0);
-            return loginreturnVo;
         }
+        return loginreturnVo;
     }
 }
