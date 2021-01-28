@@ -9,8 +9,6 @@ import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.LoginreturnVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.management.Query;
 import javax.servlet.http.HttpSession;
 
 @Service
@@ -27,26 +25,28 @@ public class LoginServiceImpl implements LoginService {
         QueryWrapper wrapper=new QueryWrapper();
         wrapper.eq("relative_id",loginVo.getUsername());
         LoginreturnVo loginreturnVo=new LoginreturnVo();
-        if(loginInformationMapper.selectOne(wrapper).getPassword().equals(loginVo.getPassword())){
-            loginreturnVo.setState(1);
-            LoginInformation loginInformation =loginInformationMapper.selectOne(wrapper);
-            switch(userMapper.selectOne(wrapper).getRole()){
-                case 0:
-                    session.setAttribute("student",loginInformation);
-                    loginreturnVo.setUrl("0");
-                    break;
-                case 1:
-                    session.setAttribute("teacher",loginInformation);
-                    loginreturnVo.setUrl("1");
-                    break;
-                case 2:
-                    session.setAttribute("admin",loginInformation);
-                    loginreturnVo.setUrl("3");
-                    break;
+        if(loginInformationMapper.selectOne(wrapper)!=null){
+            if(loginInformationMapper.selectOne(wrapper).getPassword().equals(loginVo.getPassword())){
+                loginreturnVo.setState(1);
+                LoginInformation loginInformation =loginInformationMapper.selectOne(wrapper);
+                switch(userMapper.selectOne(wrapper).getRole()){
+                    case 0:
+                        session.setAttribute("student",loginInformation);
+                        loginreturnVo.setUrl("/html/student/home.html");
+                        break;
+                    case 1:
+                        session.setAttribute("teacher",loginInformation);
+                        loginreturnVo.setUrl("/html/teacher/home.html");
+                        break;
+                    case 2:
+                        session.setAttribute("admin",loginInformation);
+                        loginreturnVo.setUrl("/html/admin/home.html");
+                        break;
+                }
             }
-        }
-        else{
-            loginreturnVo.setState(0);
+            else{
+                loginreturnVo.setState(0);
+            }
         }
         return loginreturnVo;
     }
