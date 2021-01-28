@@ -13,7 +13,7 @@ class StudentControllerTest {
 
     @Test
     void test(){
-        TableVo tableVo=studentService.getCourse(1,10);
+        TableVo tableVo=studentService.getCourse(1,5);
         System.out.println(tableVo.getData());
     }
 }
