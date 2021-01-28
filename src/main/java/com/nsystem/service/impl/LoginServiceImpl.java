@@ -35,7 +35,7 @@ public class LoginServiceImpl implements LoginService {
                     loginreturnVo.setUrl("1");
                     break;
                 case 2:
-                    loginreturnVo.setUrl("2");
+                    loginreturnVo.setUrl("3");
                     break;
             }
         }
