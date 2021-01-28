@@ -32,15 +32,15 @@ public class LoginServiceImpl implements LoginService {
                 switch(userMapper.selectOne(wrapper).getRole()){
                     case 0:
                         session.setAttribute("student",loginInformation);
-                        loginreturnVo.setUrl("/html/student/home.html");
+                        loginreturnVo.setUrl("html/student/home.html");
                         break;
                     case 1:
                         session.setAttribute("teacher",loginInformation);
-                        loginreturnVo.setUrl("/html/teacher/home.html");
+                        loginreturnVo.setUrl("html/teacher/home.html");
                         break;
                     case 2:
                         session.setAttribute("admin",loginInformation);
-                        loginreturnVo.setUrl("/html/admin/home.html");
+                        loginreturnVo.setUrl("html/admin/home.html");
                         break;
                 }
             }
