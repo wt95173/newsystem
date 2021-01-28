@@ -6,6 +6,7 @@ import com.nsystem.vo.LoginreturnVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import javax.servlet.http.HttpSession;
 
 @RestController
 public class LoginController {
@@ -14,10 +15,7 @@ public class LoginController {
     private LoginService loginService;
 
     @RequestMapping("/juge")
-    public LoginreturnVo login(LoginVo loginVo){
-        return loginService.findByName(loginVo);
+    public LoginreturnVo login(LoginVo loginVo, HttpSession session){
+        return loginService.findByName(loginVo,session);
     }
-
-
-
 }
