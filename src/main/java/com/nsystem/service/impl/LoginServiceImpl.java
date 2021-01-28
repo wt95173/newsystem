@@ -36,11 +36,11 @@ public class LoginServiceImpl implements LoginService {
                         break;
                     case 1:
                         session.setAttribute("teacher",loginInformation);
-                        loginreturnVo.setUrl("1");
+                        loginreturnVo.setUrl("/html/teacher/home.html");
                         break;
                     case 2:
                         session.setAttribute("admin",loginInformation);
-                        loginreturnVo.setUrl("3");
+                        loginreturnVo.setUrl("/html/admin/home.html");
                         break;
                 }
             }
