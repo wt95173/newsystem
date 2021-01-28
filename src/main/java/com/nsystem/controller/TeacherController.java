@@ -1,6 +1,6 @@
 package com.nsystem.controller;
 
-import com.nsystem.service.StudentService;
+import com.nsystem.service.TeacherService;
 import com.nsystem.vo.LoginVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/student")
-public class StudentController {
+@RequestMapping("/teacher")
+public class TeacherController {
 
     @Autowired
-    private StudentService studentService;
+    private TeacherService teacherService;
 
     @RequestMapping(value = "/getUserName",method = RequestMethod.POST)
     @ResponseBody
     public LoginVo getUserName(HttpSession session){
-        return studentService.getUserName(session);
+       return teacherService.getUserName(session);
     }
 }

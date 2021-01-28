@@ -4,6 +4,6 @@ import com.nsystem.vo.LoginVo;
 
 import javax.servlet.http.HttpSession;
 
-public interface StudentService {
+public interface TeacherService {
     public LoginVo getUserName(HttpSession session);
 }
