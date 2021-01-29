@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.nsystem.entity.Course;
+import com.nsystem.entity.EvaluationTable;
 import com.nsystem.entity.LoginInformation;
 import com.nsystem.mapper.CourseMapper;
 import com.nsystem.mapper.EvaluationTableMapper;
@@ -41,23 +42,25 @@ public class StudentServiceImpl implements StudentService {
         TableVo tableVo=new TableVo();
         tableVo.setCode(0);
         tableVo.setMsg("");
-        tableVo.setCount(courseMapper.selectCount(null));
+
+
+        QueryWrapper wrapper1=new QueryWrapper();
+        List<EvaluationTable> evaluationTableList=evaluationTableMapper.selectList(null);
+        for(EvaluationTable evaluationTable:evaluationTableList){
+            wrapper1.ne("course_id",evaluationTable.getCourseId());
+        }
 
         IPage<Course> courseIPage=new Page<>(page,limit);
-        IPage<Course> result=courseMapper.selectPage(courseIPage,null);
+        IPage<Course> result=courseMapper.selectPage(courseIPage,wrapper1);
         List<Course> courseList=result.getRecords();
-
         List<CourseVo> courseVoList=new ArrayList<>();
 
         for(Course course:courseList){
             CourseVo courseVo=new CourseVo();
             BeanUtils.copyProperties(course,courseVo);
-            QueryWrapper wrapper=new QueryWrapper();
-            wrapper.eq("course_id",course.getCourseId());
-            if(evaluationTableMapper.selectOne(wrapper)==null) {
-                courseVoList.add(courseVo);
-            }
+            courseVoList.add(courseVo);
         }
+
         tableVo.setData(courseVoList);
         tableVo.setCount(courseVoList.size());
         return tableVo;
