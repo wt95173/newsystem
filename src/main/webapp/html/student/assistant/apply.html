@@ -115,7 +115,7 @@
 							data:{"courseId":data.courseId,"level":level},
 							dataType: "json",
 							success: function(data){
-								if (data.state == -1){
+								if (data== -1){
 									layer.msg("申请失败", {icon: 5});
 								}else{
 									table.reload('test');
