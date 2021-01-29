@@ -3,9 +3,11 @@ package com.nsystem.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.nsystem.entity.Choice;
 import com.nsystem.entity.Course;
 import com.nsystem.entity.EvaluationTable;
 import com.nsystem.entity.LoginInformation;
+import com.nsystem.mapper.ChoiceMapper;
 import com.nsystem.mapper.CourseMapper;
 import com.nsystem.mapper.EvaluationTableMapper;
 import com.nsystem.service.StudentService;
@@ -28,6 +30,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private EvaluationTableMapper evaluationTableMapper;
+
+    @Autowired
+    private ChoiceMapper choiceMapper;
 
     @Override
     public LoginVo getUserName(HttpSession session) {
@@ -67,4 +72,40 @@ public class StudentServiceImpl implements StudentService {
 
         return tableVo;
     }
+
+    @Override
+    public int setChoice(Integer courseId, Integer level, HttpSession session) {
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
+        Integer studentId=loginInformation.getRelativeId();
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("student_id",studentId);
+        wrapper.eq("course_Id",courseId);
+        wrapper.eq("level",level);
+        if(choiceMapper.selectOne(wrapper)!=null){
+            return 1;
+        }
+        else{
+            Choice choice=new Choice();
+            choice.setCourseId(courseId);
+            choice.setStudentId(studentId);
+            choice.setLevel(level);
+            List<Choice> choiceList=choiceMapper.selectList(null);
+            choice.setChoiceId(choiceList.get(choiceList.size()-1).getChoiceId()+1);
+            return choiceMapper.updateById(choice);
+        }
+    }
+
+    @Override
+    public TableVo<Choice> getChoice(HttpSession session) {
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
+        Integer studentId=loginInformation.getRelativeId();
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("student_id",studentId);
+        List<Choice> choiceList=choiceMapper.selectList(wrapper);
+        TableVo tableVo=new TableVo();
+        tableVo.setData(choiceList);
+        return tableVo;
+    }
+
+
 }
