@@ -11,20 +11,31 @@
 <body>
 
 <div id="show_div" style="display: none;" align="center">
-	<form class="layui-form layui-form-pane" action="${pageContext.request.contextPath}/admin/addcourse" method="post">
-		<div class="layui-form-item">
-			<div class="layui-inline">
-				<label class="layui-form-label" >课程名：</label>
-				<div class="layui-input-inline">
-					<input type="text" name="coursename" lay-verify="required" placeholder="请输入主题名" autocomplete="off" class="layui-input">
+	<form method="post">
+		<div >
+			<div >
+				<div style="padding:20px">
+					<div style="margin-left: 75px; float: left">
+						<input type="radio" name="level" id="firstchoice" value="1"/>第一志愿
+					</div>
+					<div style="margin-right: 75px;float: right">
+						<input type="radio" name="level" id="secondchoice" value="2">第二志愿
+					</div>
 				</div>
 			</div>
 		</div>
-
 	</form>
 </div>
 
 <table class="layui-hide" id="test" lay-filter="test"></table>
+<table class="layui-hide" id="choice_table" lay-filter="choice_table"></table>
+
+<script type="text/html" id="toolbarDemo">
+	<div class="layui-btn-container">
+		<button class="layui-btn  layui-btn-warm btn-add layui-btn-sm" lay-event="add">待审批</button>
+		<button class="layui-btn layui-btn-sm" lay-event="refresh"><i class="layui-icon layui-icon-refresh-3"></i></button>
+	</div>
+</script>
 
 <script type="text/html" id="barDemo">
 	<a class="layui-btn layui-btn-xs" lay-event="apply">申请</a>
@@ -37,24 +48,37 @@
 				,layer = layui.layer
 				,$ = layui.$;
 
-
+		//展示可选课程列表
 		table.render({
 			elem: '#test'
 			,url:'http://localhost:8080/student/course'
+			,unresize:true
 			,cols: [[
-				{field:'course_id', title:'课程ID', fixed: 'left', sort: true}
-				,{field:'course_name', title:'课程名'}
+				{field:'courseId', title:'课程ID', fixed: 'left', sort: true}
+				,{field:'courseName', title:'课程名'}
 				,{field:'time', title:'课时数', sort: true}
 				,{field:'type', title:'课程性质', sort: true}
-				,{field:'teach_object', title:'授课对象'}
-				,{field:'student_num', title:'授课人数'}
+				,{field:'teachObject', title:'授课对象'}
+				,{field:'studentNum', title:'授课人数'}
 				,{field:'term', title:'开设学期'}
 				,{filed:'right', align:'center', toolbar: '#barDemo'}
 			]]
 			,page:{				//分页设置
-				limit:10,		//默认每一页显示数量
-				limits:[10,20,30,40,50]		//可选择每页显示的数量
+				limit:5,		//默认每一页显示数量
+				limits:[5,10,20,30,40,50]		//可选择每页显示的数量
 			}
+		});
+
+		//展示待审批课程列表
+		table.render({
+			elem: '#choice_table'
+			,url:'http://localhost:8080/student/choice'
+			,unresize:true
+			,toolbar: '#toolbarDemo'
+			,cols: [[
+				{field:'courseId', title:'课程ID', fixed: 'left'}
+				,{field:'level', title:'志愿等级'}
+			]]
 		});
 
 		//监听工具条
@@ -63,21 +87,57 @@
 
 			if(obj.event === 'apply'){
 				console.log(data);
-				$.ajax({
-					url: '${pageContext.request.contextPath}/student/querycoursetopics',
-					type: "POST",
-					data:{"courseid":data.courseId},
-					dataType: "json",
-					success: function(data){
-						if(data.state==1){
-							window.open("${pageContext.request.contextPath}" + data.url);
-							// parent.iframe.href = "${pageContext.request.contextPath}" + data.url;
-						}else{
-							layer.msg("查看失败", {icon: 5});
+				layer.open({
+					type: 1,
+					area: ['390px', '150px'],
+					title: '选择志愿',
+					shadeClose: false, //点击遮罩关闭
+					content: $('#show_div'),
+					btn:["申请","关闭"],
+					yes: function (index,layero) {
+						var level = $("input[name='level']:checked").val();
+						$.ajax({
+							url: "http://localhost:8080/student/apply",
+							type: "POST",
+							data:{"courseId":data.courseId,"level":level},
+							dataType: "json",
+							success: function(data){
+								table.reload('test');
+								table.reload('choice_table');
+								layer.msg("申请成功", {icon: 6});
+							},
+							error:function (){
+								layer.msg("申请失败", {icon: 5});
+							}
+						});
+						var i;
+						for (i = 0; (i < document.forms.length); i++) {
+							document.forms[i].reset();
+						}
+						layer.close(index);
+					},
+					btn2:function () {
+						var i;
+						for (i = 0; (i < document.forms.length); i++) {
+							document.forms[i].reset();
 						}
 					}
-
 				});
+				// $.ajax({
+				// 	url: '${pageContext.request.contextPath}/student/querycoursetopics',
+				// 	type: "POST",
+				// 	data:{"courseid":data.courseId},
+				// 	dataType: "json",
+				// 	success: function(data){
+				// 		if(data.state==1){
+				// 			window.open("${pageContext.request.contextPath}" + data.url);
+				// 			// parent.iframe.href = "${pageContext.request.contextPath}" + data.url;
+				// 		}else{
+				// 			layer.msg("查看失败", {icon: 5});
+				// 		}
+				// 	}
+				//
+				// });
 			}
 		});
 

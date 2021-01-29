@@ -97,11 +97,6 @@
                             <i class="layui-icon layui-icon-home"></i>
                             <cite>主页</cite>
                         </a>
-                        <dl class="layui-nav-child">
-                            <dd data-name="console" class="layui-this">
-                                <a lay-href=${pageContext.request.contextPath}/student/getPersonalInfo>个人信息</a>
-                            </dd>
-                        </dl>
                     </li>
 
                     <li data-name="app" class="layui-nav-item">
@@ -174,7 +169,7 @@
         <!-- 主体内容 -->
         <div class="layui-body" id="LAY_app_body">
             <div class="layadmin-tabsbody-item layui-show">
-                <iframe name="iframe" src="${pageContext.request.contextPath}/jsp/Student/mycourses.jsp" frameborder="0" class="layadmin-iframe"></iframe>
+                <iframe name="iframe" src="assistant/apply.html" frameborder="0" class="layadmin-iframe"></iframe>
             </div>
         </div>
 
@@ -193,32 +188,28 @@
     }).extend({
         index: 'lib/index' //主入口模块
     }).use('index',function(){
-		var $ = layui.$;
-		
-		$.ajax({
-		    url: 'http://localhost:8080/student/getUserName',
-		    type: "POST",
-		    data:{},
-		    dataType: "json",
-		    success: function(data){
-		        $('#username').text(data.username);
-		    },
-		    error:function(data){
-                $('#username').text("张三");
-		        console.log(data);
+        var $ = layui.$;
+
+        $.ajax({
+            url: 'http://localhost:8080/student/getUserName',
+            type: "POST",
+            data:{},
+            dataType: "json",
+            success: function(data){
+                $('#username').text(data.username);
             }
-		});
-	});
-    
-    
+        });
+    });
+
+
 </script>
 
 
 <script type="text/javascript">
-document.getElementById('temp0').onclick=function(){
-	sessionStorage.clear();
-    location.href="../../html/login.html"
-}
+    document.getElementById('temp0').onclick=function(){
+        sessionStorage.clear();
+        location.href="../../html/login.html"
+    }
 
 </script>
 </body>
