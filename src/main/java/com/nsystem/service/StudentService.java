@@ -1,5 +1,6 @@
 package com.nsystem.service;
 
+import com.nsystem.entity.Choice;
 import com.nsystem.vo.CourseVo;
 import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.TableVo;
@@ -10,4 +11,9 @@ public interface StudentService {
     public LoginVo getUserName(HttpSession session);
 
     public TableVo<CourseVo> getCourse(Integer page,Integer limit);
+
+    public int setChoice(Integer courseId,Integer level,HttpSession session);
+
+    public TableVo<Choice> getChoice(HttpSession session);
+
 }

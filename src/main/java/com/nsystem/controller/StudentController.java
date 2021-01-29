@@ -1,5 +1,6 @@
 package com.nsystem.controller;
 
+import com.nsystem.entity.Choice;
 import com.nsystem.service.StudentService;
 import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.TableVo;
@@ -28,4 +29,18 @@ public class StudentController {
     public TableVo getCourseList(Integer page, Integer limit){
         return studentService.getCourse(page, limit);
     }
+
+    @RequestMapping(value = "/apply",method = RequestMethod.POST)
+    @ResponseBody
+    public int setChoice(Integer courseId,Integer level,HttpSession session){
+        return studentService.setChoice(courseId, level, session);
+    }
+
+    @RequestMapping(value = "/choice",method = RequestMethod.POST)
+    @ResponseBody
+    public TableVo getChoice(HttpSession session){
+        return studentService.getChoice(session);
+    }
+
+
 }
