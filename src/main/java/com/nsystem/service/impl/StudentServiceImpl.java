@@ -50,6 +50,8 @@ public class StudentServiceImpl implements StudentService {
             wrapper1.ne("course_id",evaluationTable.getCourseId());
         }
 
+        tableVo.setCount(courseMapper.selectCount(wrapper1));
+
         IPage<Course> courseIPage=new Page<>(page,limit);
         IPage<Course> result=courseMapper.selectPage(courseIPage,wrapper1);
         List<Course> courseList=result.getRecords();
@@ -62,7 +64,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         tableVo.setData(courseVoList);
-        tableVo.setCount(courseVoList.size());
+
         return tableVo;
     }
 }
