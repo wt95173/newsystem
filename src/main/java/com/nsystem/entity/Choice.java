@@ -13,4 +13,6 @@ public class Choice {
     private Integer studentId;
 
     private Integer level;
+
+    private Integer state;
 }

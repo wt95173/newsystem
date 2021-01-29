@@ -16,6 +16,7 @@ import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.TableVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.DelegatingServletInputStream;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
@@ -73,10 +74,7 @@ public class StudentServiceImpl implements StudentService {
         return tableVo;
     }
 
-    @Override
-    public int setChoice(Integer courseId, Integer level, HttpSession session) {
-        LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
-        Integer studentId=loginInformation.getRelativeId();
+    public int insert(Integer courseId, Integer level,Integer studentId){
         QueryWrapper wrapper=new QueryWrapper();
         wrapper.eq("student_id",studentId);
         //wrapper.eq("course_Id",courseId);
@@ -89,6 +87,7 @@ public class StudentServiceImpl implements StudentService {
                 choice.setCourseId(courseId);
                 choice.setStudentId(studentId);
                 choice.setLevel(level);
+                choice.setState(0);
                 List<Choice> choiceList=choiceMapper.selectList(null);
                 choice.setChoiceId(choiceList.get(choiceList.size()-1).getChoiceId()+1);
                 QueryWrapper wrapper1=new QueryWrapper();
@@ -98,24 +97,86 @@ public class StudentServiceImpl implements StudentService {
                     choiceMapper.delete(wrapper1);
                 }
                 choiceMapper.delete(wrapper);
-                return choiceMapper.updateById(choice);
+                return choiceMapper.insert(choice);
             }
         }
-        else{
+        else {
             choice.setCourseId(courseId);
             choice.setStudentId(studentId);
             choice.setLevel(level);
+            choice.setState(0);
             List<Choice> choiceList=choiceMapper.selectList(null);
             choice.setChoiceId(choiceList.get(choiceList.size()-1).getChoiceId()+1);
-            QueryWrapper wrapper2=new QueryWrapper();
-            wrapper2.eq("student_id",studentId);
-            wrapper2.eq("course_id",courseId);
-            if(choiceMapper.selectOne(wrapper2)!=null){
+            QueryWrapper wrapper2 = new QueryWrapper();
+            wrapper2.eq("student_id", studentId);
+            wrapper2.eq("course_id", courseId);
+            if (choiceMapper.selectOne(wrapper2) != null) {
                 choiceMapper.delete(wrapper2);
             }
             choiceMapper.delete(wrapper);
-            return choiceMapper.updateById(choice);
+            return choiceMapper.insert(choice);
         }
+    }
+
+
+    @Override
+    public int setChoice(Integer courseId, Integer level, HttpSession session) {
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
+        Integer studentId=loginInformation.getRelativeId();
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("student_id",studentId);
+        //wrapper.eq("course_Id",courseId);
+        wrapper.eq("level",level);
+        Choice choice=new Choice();
+
+        QueryWrapper wrapper3=new QueryWrapper();
+        wrapper3.eq("student_id",studentId);
+        wrapper3.eq("level",1);
+        QueryWrapper wrapper4=new QueryWrapper();
+        wrapper4.eq("student_id",studentId);
+        wrapper4.eq("level",2);
+        if(choiceMapper.selectOne(wrapper3)!=null&&choiceMapper.selectOne(wrapper4)==null){
+            if(choiceMapper.selectOne(wrapper3).getState().equals(1)||choiceMapper.selectOne(wrapper3).getState().equals(2)){
+                if(level==1){
+                    return -1;
+                }else{
+                    return insert(courseId,level,studentId);
+                }
+            }else{
+                return insert(courseId,level,studentId);
+            }
+        }else if(choiceMapper.selectOne(wrapper3)==null&&choiceMapper.selectOne(wrapper4)!=null){
+            if(choiceMapper.selectOne(wrapper4).getState().equals(1)||choiceMapper.selectOne(wrapper4).getState().equals(2)){
+                if(level==2){
+                    return -1;
+                }else{
+                    return insert(courseId,level,studentId);
+                }
+            }else{
+                return insert(courseId,level,studentId);
+            }
+        }else if(choiceMapper.selectOne(wrapper3)!=null&&choiceMapper.selectOne(wrapper4)!=null){
+            if((choiceMapper.selectOne(wrapper3).getState().equals(1)||choiceMapper.selectOne(wrapper3).getState().equals(2))&&choiceMapper.selectOne(wrapper4).getState().equals(1)||choiceMapper.selectOne(wrapper4).getState().equals(2)){
+                return -1;
+            }else if((choiceMapper.selectOne(wrapper3).getState().equals(1)||choiceMapper.selectOne(wrapper3).getState().equals(2))&&choiceMapper.selectOne(wrapper4).getState().equals(0)){
+                if(level==1){
+                    return -1;
+                }else{
+                    return insert(courseId,level,studentId);
+                }
+            }else if((choiceMapper.selectOne(wrapper4).getState().equals(1)||choiceMapper.selectOne(wrapper4).getState().equals(2))&&choiceMapper.selectOne(wrapper3).getState().equals(0)){
+                if(level==2){
+                    return -1;
+                }else {
+                    return insert(courseId,level,studentId);
+                }
+            }else{
+                return insert(courseId,level,studentId);
+            }
+        }else{
+            return insert(courseId,level,studentId);
+        }
+
     }
 
     @Override
