@@ -41,6 +41,16 @@
 	<a class="layui-btn layui-btn-xs" lay-event="apply">申请</a>
 </script>
 
+<script type="text/html" id="titleTpl">
+	{{#  if(d.state == 0){ }}
+	<span style="color: #01AAED">待审批</span>
+	{{#  }else if(d.state == 1){ }}
+	<span style="color: #33DF83">通过</span>
+	{{# }else { }}
+	<span style="color: orangered">不通过</span>
+	{{# } }}
+</script>
+
 <script src="../../../resources/layuiadmin/layui/layui.js" charset="utf-8"></script>
 <script>
 	layui.use(['layer', 'table'], function(){
@@ -79,6 +89,7 @@
 			,cols: [[
 				{field:'courseId', title:'课程ID', fixed: 'left'}
 				,{field:'level', title:'志愿等级'}
+				,{field:'state',title:'状态',templet:'#titleTpl'}
 			]]
 			,page:false
 		});
@@ -104,9 +115,13 @@
 							data:{"courseId":data.courseId,"level":level},
 							dataType: "json",
 							success: function(data){
-								table.reload('test');
-								table.reload('choice_table');
-								layer.msg("申请成功", {icon: 6});
+								if (data.state == -1){
+									layer.msg("申请失败", {icon: 5});
+								}else{
+									table.reload('test');
+									table.reload('choice_table');
+									layer.msg("申请成功", {icon: 6});
+								}
 							},
 							error:function (){
 								layer.msg("申请失败", {icon: 5});
@@ -125,21 +140,6 @@
 						}
 					}
 				});
-				// $.ajax({
-				// 	url: '${pageContext.request.contextPath}/student/querycoursetopics',
-				// 	type: "POST",
-				// 	data:{"courseid":data.courseId},
-				// 	dataType: "json",
-				// 	success: function(data){
-				// 		if(data.state==1){
-				// 			window.open("${pageContext.request.contextPath}" + data.url);
-				// 			// parent.iframe.href = "${pageContext.request.contextPath}" + data.url;
-				// 		}else{
-				// 			layer.msg("查看失败", {icon: 5});
-				// 		}
-				// 	}
-				//
-				// });
 			}
 		});
 
