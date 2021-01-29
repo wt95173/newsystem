@@ -74,11 +74,13 @@
 			elem: '#choice_table'
 			,url:'http://localhost:8080/student/choice'
 			,unresize:true
+			,method:'post'
 			,toolbar: '#toolbarDemo'
 			,cols: [[
 				{field:'courseId', title:'课程ID', fixed: 'left'}
 				,{field:'level', title:'志愿等级'}
 			]]
+			,page:false
 		});
 
 		//监听工具条
