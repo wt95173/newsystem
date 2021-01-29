@@ -45,13 +45,19 @@ public class TeacherServiceImpl implements TeacherService {
 
         LoginInformation loginInformation=(LoginInformation) session.getAttribute("teacher");
         Integer teacherId=loginInformation.getRelativeId();
+
         QueryWrapper wrapper=new QueryWrapper();
         wrapper.eq("teacher_id",teacherId);
-        QueryWrapper wrapper1=new QueryWrapper();
+
         List<TeacherCourse> teacherCourseList=teacherCourseMapper.selectList(wrapper);
+        QueryWrapper wrapper1=new QueryWrapper();
+        //QueryWrapper wrapper2=new QueryWrapper();
+
         for(TeacherCourse teacherCourse:teacherCourseList){
             wrapper1.eq("course_id",teacherCourse.getCourseId());
+            wrapper1.or();
         }
+
         tableVo.setCount(courseMapper.selectCount(wrapper1));
 
         IPage<Course> courseIPage=new Page<>(page,limit);
