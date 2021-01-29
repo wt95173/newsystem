@@ -11,5 +11,4 @@ public class CourseVo {
     private Integer teachObject;
     private Integer studentNum;
     private Integer term;
-    private Integer state;
 }

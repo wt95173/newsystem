@@ -66,6 +66,8 @@ public class StudentServiceImpl implements StudentService {
         for(Course course:courseList){
             CourseVo courseVo=new CourseVo();
             BeanUtils.copyProperties(course,courseVo);
+
+
             courseVoList.add(courseVo);
         }
 

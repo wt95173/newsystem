@@ -2,6 +2,7 @@ package com.nsystem.controller;
 
 import com.nsystem.service.TeacherService;
 import com.nsystem.vo.LoginVo;
+import com.nsystem.vo.TableVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,5 +22,10 @@ public class TeacherController {
     @ResponseBody
     public LoginVo getUserName(HttpSession session){
        return teacherService.getUserName(session);
+    }
+
+    @RequestMapping("/course")
+    public TableVo getCourseList(Integer page, Integer limit, HttpSession session){
+        return teacherService.getCourse(page,limit,session);
     }
 }
