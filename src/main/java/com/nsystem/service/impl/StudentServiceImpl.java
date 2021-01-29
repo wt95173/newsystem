@@ -104,8 +104,9 @@ public class StudentServiceImpl implements StudentService {
         List<Choice> choiceList=choiceMapper.selectList(wrapper);
         TableVo tableVo=new TableVo();
         tableVo.setData(choiceList);
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+        tableVo.setCount(choiceList.size());
         return tableVo;
     }
-
-
 }
