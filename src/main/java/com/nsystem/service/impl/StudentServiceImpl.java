@@ -79,18 +79,41 @@ public class StudentServiceImpl implements StudentService {
         Integer studentId=loginInformation.getRelativeId();
         QueryWrapper wrapper=new QueryWrapper();
         wrapper.eq("student_id",studentId);
-        wrapper.eq("course_Id",courseId);
+        //wrapper.eq("course_Id",courseId);
         wrapper.eq("level",level);
+        Choice choice=new Choice();
         if(choiceMapper.selectOne(wrapper)!=null){
-            return 1;
+            if(choiceMapper.selectOne(wrapper).getCourseId().equals(courseId)){
+                return 1;
+            }else{
+                choice.setCourseId(courseId);
+                choice.setStudentId(studentId);
+                choice.setLevel(level);
+                List<Choice> choiceList=choiceMapper.selectList(null);
+                choice.setChoiceId(choiceList.get(choiceList.size()-1).getChoiceId()+1);
+                QueryWrapper wrapper1=new QueryWrapper();
+                wrapper1.eq("student_id",studentId);
+                wrapper1.eq("course_id",courseId);
+                if(choiceMapper.selectOne(wrapper1)!=null){
+                    choiceMapper.delete(wrapper1);
+                }
+                choiceMapper.delete(wrapper);
+                return choiceMapper.updateById(choice);
+            }
         }
         else{
-            Choice choice=new Choice();
             choice.setCourseId(courseId);
             choice.setStudentId(studentId);
             choice.setLevel(level);
             List<Choice> choiceList=choiceMapper.selectList(null);
             choice.setChoiceId(choiceList.get(choiceList.size()-1).getChoiceId()+1);
+            QueryWrapper wrapper2=new QueryWrapper();
+            wrapper2.eq("student_id",studentId);
+            wrapper2.eq("course_id",courseId);
+            if(choiceMapper.selectOne(wrapper2)!=null){
+                choiceMapper.delete(wrapper2);
+            }
+            choiceMapper.delete(wrapper);
             return choiceMapper.updateById(choice);
         }
     }
