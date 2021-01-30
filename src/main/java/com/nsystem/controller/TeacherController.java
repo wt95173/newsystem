@@ -28,4 +28,11 @@ public class TeacherController {
     public TableVo getCourseList(Integer page, Integer limit, HttpSession session){
         return teacherService.getCourse(page,limit,session);
     }
+
+    @RequestMapping("/applylist")
+    public TableVo getStudent(Integer page, Integer limit,Integer courseId){
+        return teacherService.getStudent(page, limit, courseId);
+    }
+
+
 }
