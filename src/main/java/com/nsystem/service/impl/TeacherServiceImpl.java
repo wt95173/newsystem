@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,46 +85,54 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public TableVo<StudentVo> getStudent(Integer page, Integer limit,Integer courseId) {
-        TableVo tableVo=new TableVo();
+    public TableVo<StudentVo> getStudent(Integer page, Integer limit, Integer courseId) {
+        TableVo tableVo = new TableVo();
         tableVo.setCode(0);
         tableVo.setMsg("");
+        int x=0;
 
-        QueryWrapper wrapper=new QueryWrapper();
-        wrapper.eq("course_id",courseId);
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("course_id", courseId);
 
-        QueryWrapper wrapper1=new QueryWrapper();
-        List<Choice> choiceList=choiceMapper.selectList(wrapper);
-        for(Choice choice:choiceList){
-            if(choice.getState()==0){
-                wrapper1.eq("student_id",choice.getStudentId());
+        List<Choice> choiceList = choiceMapper.selectList(wrapper);
+
+        QueryWrapper wrapper1 = new QueryWrapper();
+        for (Choice choice : choiceList) {
+            if (choice.getState()==0) {
+                x++;
+                wrapper1.eq("student_id", choice.getStudentId());
                 wrapper1.or();
             }
         }
-        tableVo.setCount(studentMapper.selectCount(wrapper1));
 
-        IPage<Student> studentIPage=new Page<>(page,limit);
-        IPage<Student> result=studentMapper.selectPage(studentIPage,wrapper1);
-        List<Student> studentList=result.getRecords();
-        List<StudentVo> studentVoList=new ArrayList<>();
+        if (x==0) {
+            tableVo.setCount(0);
+            tableVo.setData(null);
 
-        for(Student student:studentList){
-            StudentVo studentVo=new StudentVo();
-            BeanUtils.copyProperties(student,studentVo);
-            QueryWrapper wrapper2=new QueryWrapper();
-            wrapper2.eq("major_id",student.getMajorId());
-            studentVo.setMajorName(majorMapper.selectOne(wrapper2).getMajorName());
-            if(student.getSex().equals(0)){
-                studentVo.setSex("男");
-            }else{
-                studentVo.setSex("女");
+        } else {
+            tableVo.setCount(studentMapper.selectCount(wrapper1));
+            IPage<Student> studentIPage = new Page<>(page, limit);
+            IPage<Student> result = studentMapper.selectPage(studentIPage, wrapper1);
+            List<Student> studentList = result.getRecords();
+            List<StudentVo> studentVoList = new ArrayList<>();
+
+            for (Student student : studentList) {
+                StudentVo studentVo = new StudentVo();
+                BeanUtils.copyProperties(student, studentVo);
+                QueryWrapper wrapper2 = new QueryWrapper();
+                wrapper2.eq("major_id", student.getMajorId());
+                studentVo.setMajorName(majorMapper.selectOne(wrapper2).getMajorName());
+                if (student.getSex().equals(0)) {
+                    studentVo.setSex("男");
+                } else {
+                    studentVo.setSex("女");
+                }
+                studentVoList.add(studentVo);
             }
-            studentVoList.add(studentVo);
+            tableVo.setData(studentVoList);
         }
-
-        tableVo.setData(studentVoList);
+        x=0;
         return tableVo;
-
     }
 
 
