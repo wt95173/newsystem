@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" href="../../../resources/layuiadmin/layui/css/layui.css" media="all">
+    <title>选择科研项目</title>
+</head>
+<body>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="participation">参与</a>
+</script>
+
+<script src="../../../resources/layuiadmin/layui/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['layer', 'table'], function(){
+        var table = layui.table
+            ,layer = layui.layer;
+
+        table.render({
+            elem: '#test'
+            ,url:'http://localhost:8080/student/projects'
+            ,unresize:true
+            ,cols: [[
+                {field:'projectId', title:'项目id', fixed: 'left'}
+                ,{field:'projectName', title:'项目名'}
+                ,{field:'projectType', title:'项目类型'}
+                ,{filed:'right', align:'center', toolbar: '#barDemo'}
+            ]]
+            ,page:{				//分页设置
+                limit:5,		//默认每一页显示数量
+                limits:[5,10,20,30,40,50]		//可选择每页显示的数量
+            }
+        });
+
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+
+            if(obj.event === 'participation'){
+                layer.confirm('确认选择？',function (index) {
+                    $.ajax({
+                        url: 'http://localhost:8080/student/participation',
+                        type: "POST",
+                        data:{"projectId":data.projectId},
+                        dataType: "json",
+                        success: function(){
+                            layer.close(index);
+                            table.reload('test');
+                        }
+                    });
+                })
+            }
+
+        })
+
+    });
+</script>
+
+</body>
+</html>

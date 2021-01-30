@@ -84,7 +84,6 @@
         </div>
 
         <!-- 侧边菜单 -->
-        <!-- 侧边菜单 -->
         <div class="layui-side layui-side-menu">
             <div class="layui-side-scroll">
                 <div class="layui-logo" href="home/console.html">
@@ -100,13 +99,18 @@
                     </li>
 
                     <li data-name="app" class="layui-nav-item">
-                        <a href="javascript:;" lay-tips="我的主题" lay-direction="2">
+                        <a href="javascript:;" lay-tips="科研项目" lay-direction="2">
                             <i class="layui-icon layui-icon-app"></i>
-                            <cite>我的主题</cite>
+                            <cite>科研项目</cite>
                         </a>
                         <dl class="layui-nav-child">
                             <dd>
-                                <a lay-href="${pageContext.request.contextPath}/jsp/Student/mytopics.jsp">查看我的主题</a>
+                                <a lay-href="project/selectproject.html">选择科研项目</a>
+                            </dd>
+                        </dl>
+                        <dl class="layui-nav-child">
+                            <dd>
+                                <a lay-href="project/projectrecord/myprojects.html">添加项目日志</a>
                             </dd>
                         </dl>
                     </li>
