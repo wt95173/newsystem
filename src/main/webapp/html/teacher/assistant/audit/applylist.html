@@ -34,7 +34,8 @@
 <script>
     layui.use(['layer', 'table'], function(){
         var table = layui.table
-            ,layer = layui.layer;
+            ,layer = layui.layer
+            ,$ = layui.$;
 
         var searchURL = window.location.search;
         searchURL = searchURL.substring(1, searchURL.length);
