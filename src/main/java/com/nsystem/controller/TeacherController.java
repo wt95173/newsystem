@@ -30,9 +30,8 @@ public class TeacherController {
     }
 
     @RequestMapping("/applylist")
-    public TableVo getStudent(Integer page, Integer limit,Integer courseId){
+    public TableVo getStudent(Integer page, Integer limit,  Integer courseId){
         return teacherService.getStudent(page, limit, courseId);
     }
-
 
 }

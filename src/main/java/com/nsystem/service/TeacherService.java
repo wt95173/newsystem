@@ -5,6 +5,7 @@ import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.StudentVo;
 import com.nsystem.vo.TableVo;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public interface TeacherService {
@@ -12,5 +13,5 @@ public interface TeacherService {
 
     public TableVo<CourseVo> getCourse(Integer page, Integer limit,HttpSession session);
 
-    public TableVo<StudentVo> getStudent(Integer page, Integer limit,Integer courseId);
+    public TableVo<StudentVo> getStudent(Integer page, Integer limit,  Integer courseId);
 }
