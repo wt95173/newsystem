@@ -208,5 +208,67 @@ public class TeacherServiceImpl implements TeacherService {
         return evaluationTableMapper.insert(evaluationTable);
     }
 
+    @Override
+    public TableVo<StudentVo> getTeacherStudent(HttpSession session) {
+        TableVo tableVo = new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
 
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("teacher");
+        Integer teacherId=loginInformation.getRelativeId();
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("teacher_id",teacherId);
+        List<TeacherCourse> teacherCourseList=teacherCourseMapper.selectList(wrapper);
+        List<StudentVo> studentVoList=new ArrayList<>();
+
+        for(TeacherCourse teacherCourse:teacherCourseList){
+            Integer courseId=teacherCourse.getCourseId();
+            QueryWrapper wrapper1=new QueryWrapper();
+            wrapper1.eq("course_id",courseId);
+
+            List<EvaluationTable> evaluationTableList=evaluationTableMapper.selectList(wrapper1);
+            for(EvaluationTable evaluationTable:evaluationTableList){
+                Integer studentId=evaluationTable.getStudentId();
+                QueryWrapper wrapper2=new QueryWrapper();
+                wrapper2.eq("student_id",studentId);
+                StudentVo studentVo=new StudentVo();
+                Student student=studentMapper.selectOne(wrapper2);
+                BeanUtils.copyProperties(student,studentVo);
+                QueryWrapper wrapper3 = new QueryWrapper();
+                wrapper3.eq("major_id", student.getMajorId());
+                studentVo.setMajorName(majorMapper.selectOne(wrapper3).getMajorName());
+                if (student.getSex().equals(0)) {
+                    studentVo.setSex("男");
+                } else {
+                    studentVo.setSex("女");
+                }
+                if(evaluationTable.getResult()!=null){
+                    if(evaluationTable.getResult()==1){
+                        studentVo.setResult(1);
+                    }else{
+                        studentVo.setResult(0);
+                    }
+                }else{
+                    studentVo.setResult(null);
+                }
+                studentVoList.add(studentVo);
+            }
+        }
+        tableVo.setCount(studentVoList.size());
+        tableVo.setData(studentVoList);
+        return tableVo;
+    }
+
+    @Override
+    public int passTeacherStudent(Integer studentId, Integer result) {
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("student_id",studentId);
+        EvaluationTable evaluationTable=evaluationTableMapper.selectOne(wrapper);
+        if(result==1){
+            evaluationTable.setResult(1);
+        }else{
+            evaluationTable.setResult(2);
+        }
+        return evaluationTableMapper.updateById(evaluationTable);
+    }
 }

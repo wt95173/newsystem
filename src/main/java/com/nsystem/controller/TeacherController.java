@@ -44,6 +44,16 @@ public class TeacherController {
         return teacherService.passStudent(studentId, courseId);
     }
 
+    @RequestMapping("/teacherassistants")
+    public TableVo getTeacherStudent(HttpSession session){
+        return teacherService.getTeacherStudent(session);
+    }
+
+    @RequestMapping("/evaluate")
+    public int passTeacherStudent(Integer studentId, Integer result){
+        return teacherService.passTeacherStudent(studentId, result);
+    }
+
 
 
 }

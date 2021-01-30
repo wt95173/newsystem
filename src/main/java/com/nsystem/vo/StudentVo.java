@@ -9,4 +9,5 @@ public class StudentVo {
     private String sex;
     private String phone;
     private String majorName;
+    private Integer result;
 }
