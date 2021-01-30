@@ -5,13 +5,12 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <link rel="stylesheet" type="text/css" href="../../../../resources/layuiadmin/layui/css/layui.css" media="all">
-    <title>审核助教</title>
+    <link rel="stylesheet" type="text/css" href="../../../resources/layuiadmin/layui/css/layui.css" media="all">
+    <title>分配助教</title>
 </head>
 <body>
 
 <table class="layui-hide" id="test" lay-filter="test"></table>
-<table class="layui-hide" id="test2" lay-filter="test2"></table>
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="pass">通过</a>
@@ -19,41 +18,27 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn  layui-btn-warm btn-add layui-btn-sm" > <i class="layui-icon">&#xe613;</i> 申请的学生</button>
-        <a class="layui-btn  layui-btn-normal layui-btn-sm" href="JavaScript:history.back(-1)">返回</a>
+        <button class="layui-btn  layui-btn-warm btn-add layui-btn-sm" > <i class="layui-icon">&#xe613;</i> 空闲学生</button>
     </div>
 </script>
 
-<script type="text/html" id="toolbarDemo2">
-    <div class="layui-btn-container">
-        <button class="layui-btn  layui-btn-warm btn-add layui-btn-sm" > 课程助教</button>
-    </div>
-</script>
 
-<script src="../../../../resources/layuiadmin/layui/layui.js" charset="utf-8"></script>
+<script src="../../../resources/layuiadmin/layui/layui.js" charset="utf-8"></script>
 <script>
     layui.use(['layer', 'table'], function(){
         var table = layui.table
             ,layer = layui.layer;
 
-        var searchURL = window.location.search;
-        searchURL = searchURL.substring(1, searchURL.length);
-        var courseId = searchURL.split("&")[0].split("=")[1];
 
         table.render({
             elem: '#test'
-            ,url:'http://localhost:8080/teacher/applylist'
+            ,url:'http://localhost:8080/admin/stanbylist'
             ,toolbar: '#toolbarDemo'
-            ,where:{
-                "data": JSON.stringify({
-                    "courseId":courseId
-                })
-            }
             ,unresize:true
             ,cols: [[
                 {field:'studentId', title:'学生ID', fixed: 'left', sort: true}
                 ,{field:'studentName', title:'学生名'}
-                ,{field:'sex', title:'性别', sort: true}
+                ,{field:'sex', title:'性别'}
                 ,{field:'phone', title:'联系电话'}
                 ,{field:'majorName', title:'专业'}
                 ,{filed:'right', align:'center', toolbar: '#barDemo'}
@@ -62,22 +47,6 @@
                 limit:5,		//默认每一页显示数量
                 limits:[5,10,20,30,40,50]		//可选择每页显示的数量
             }
-        });
-
-        table.render({
-            elem: '#test2'
-            ,url:'http://localhost:8080/teacher/courseassistant'
-            ,toolbar: '#toolbarDemo2'
-            ,data:{"courseId":courseId}
-            ,unresize:true
-            ,cols: [[
-                {field:'studentId', title:'学生ID', fixed: 'left'}
-                ,{field:'studentName', title:'学生名'}
-                ,{field:'sex', title:'性别'}
-                ,{field:'phone', title:'联系电话'}
-                ,{field:'majorName', title:'专业'}
-            ]]
-            ,page:false
         });
 
         //监听工具条
