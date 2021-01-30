@@ -80,7 +80,7 @@
         table.on('tool(test)', function(obj){
             var data = obj.data;
 
-            //通过：给后端课程和学生id在评定表里面添加一项，然后把该课程下所有choice表中的数据删除
+
             if(obj.event === 'pass'){
                 layer.confirm('确认通过？',function (index){
                     $.ajax({
