@@ -76,7 +76,8 @@
                         type: "POST",
                         data:{"studentId":data.studentId,"result":1},
                         dataType: "json",
-                        success: function(data){
+                        success: function(){
+                            layer.close(index);
                             table.reload('test');
                         }
                     });
@@ -88,7 +89,8 @@
                         type: "POST",
                         data:{"studentId":data.studentId,"result":0},
                         dataType: "json",
-                        success: function(data){
+                        success: function(){
+                            layer.close(index);
                             table.reload('test');
                         }
                     });
