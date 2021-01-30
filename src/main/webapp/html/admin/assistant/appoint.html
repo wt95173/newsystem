@@ -12,8 +12,22 @@
 
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
+<div id="show_div" style="display: none;" align="center">
+    <form method="post">
+        <div >
+            <div >
+                <div style="padding:20px">
+                    <div style="margin-left: 75px; float: left">
+                        请输入课程id：<input type="text" name="courseId" id="courseId"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="pass">通过</a>
+    <a class="layui-btn layui-btn-xs" lay-event="appoint">指派</a>
 </script>
 
 <script type="text/html" id="toolbarDemo">
@@ -27,7 +41,8 @@
 <script>
     layui.use(['layer', 'table'], function(){
         var table = layui.table
-            ,layer = layui.layer;
+            ,layer = layui.layer
+            ,$ = layui.$;
 
 
         table.render({
@@ -44,8 +59,8 @@
                 ,{filed:'right', align:'center', toolbar: '#barDemo'}
             ]]
             ,page:{				//分页设置
-                limit:5,		//默认每一页显示数量
-                limits:[5,10,20,30,40,50]		//可选择每页显示的数量
+                limit:10,		//默认每一页显示数量
+                limits:[10,20,30,40,50]		//可选择每页显示的数量
             }
         });
 
@@ -53,18 +68,45 @@
         table.on('tool(test)', function(obj){
             var data = obj.data;
 
-
-            if(obj.event === 'pass'){
-                layer.confirm('确认通过？',function (index){
-                    $.ajax({
-                        url: 'http://localhost:8080/teacher/pass',
-                        type: "POST",
-                        data:{"studentId":data.studentId,"courseId":courseId},
-                        dataType: "json",
-                        success: function(data){
-                            table.reload('test');
+            if(obj.event === 'appoint'){
+                layer.open({
+                    type: 1,
+                    area: ['390px', '150px'],
+                    title: '指派班级',
+                    shadeClose: false, //点击遮罩关闭
+                    content: $('#show_div'),
+                    btn:["确定","关闭"],
+                    yes: function (index) {
+                        var courseId = $("input#courseId").val();
+                        $.ajax({
+                            url: "http://localhost:8080/admin/appoint",
+                            type: "POST",
+                            data:{"studentId":data.studentId,"courseId":courseId},
+                            dataType: "json",
+                            success: function(data){
+                                if (data== -1){
+                                    layer.msg("指派失败", {icon: 5});
+                                }else{
+                                    table.reload('test');
+                                    layer.msg("指派成功", {icon: 6});
+                                }
+                            },
+                            error:function (){
+                                layer.msg("指派失败", {icon: 5});
+                            }
+                        });
+                        var i;
+                        for (i = 0; (i < document.forms.length); i++) {
+                            document.forms[i].reset();
                         }
-                    });
+                        layer.close(index);
+                    },
+                    btn2: function () {
+                        var i;
+                        for (i = 0; (i < document.forms.length); i++) {
+                            document.forms[i].reset();
+                        }
+                    }
                 })
             }
         });
