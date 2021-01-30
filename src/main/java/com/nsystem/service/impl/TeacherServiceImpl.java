@@ -143,49 +143,39 @@ public class TeacherServiceImpl implements TeacherService {
         TableVo tableVo = new TableVo();
         tableVo.setCode(0);
         tableVo.setMsg("");
-        int x=0;
+        List<StudentVo> studentVoList=new ArrayList<>();
+
 
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("course_id", courseId);
+        if(evaluationTableMapper.selectOne(wrapper)!=null){
+            EvaluationTable evaluationTable=evaluationTableMapper.selectOne(wrapper);
 
-        List<Choice> choiceList = choiceMapper.selectList(wrapper);
+            Integer studentId=evaluationTable.getStudentId();
 
-        QueryWrapper wrapper1 = new QueryWrapper();
-        for (Choice choice : choiceList) {
-            if (choice.getState()==1) {
-                x++;
-                wrapper1.eq("student_id", choice.getStudentId());
-                wrapper1.or();
+            QueryWrapper wrapper1 = new QueryWrapper();
+            wrapper1.eq("student_id", studentId);
+
+            Student student=studentMapper.selectOne(wrapper1);
+
+            StudentVo studentVo = new StudentVo();
+            BeanUtils.copyProperties(student, studentVo);
+            QueryWrapper wrapper2 = new QueryWrapper();
+            wrapper2.eq("major_id", student.getMajorId());
+            studentVo.setMajorName(majorMapper.selectOne(wrapper2).getMajorName());
+            if (student.getSex().equals(0)) {
+                studentVo.setSex("男");
+            } else {
+                studentVo.setSex("女");
             }
-        }
-
-        if (x==0) {
+            studentVoList.add(studentVo);
+            tableVo.setData(studentVoList);
+            tableVo.setCount(1);
+        }else{
             tableVo.setCount(0);
             tableVo.setData(null);
 
-        } else {
-            tableVo.setCount(studentMapper.selectCount(wrapper1));
-            IPage<Student> studentIPage = new Page<>(page, limit);
-            IPage<Student> result = studentMapper.selectPage(studentIPage, wrapper1);
-            List<Student> studentList = result.getRecords();
-            List<StudentVo> studentVoList = new ArrayList<>();
-
-            for (Student student : studentList) {
-                StudentVo studentVo = new StudentVo();
-                BeanUtils.copyProperties(student, studentVo);
-                QueryWrapper wrapper2 = new QueryWrapper();
-                wrapper2.eq("major_id", student.getMajorId());
-                studentVo.setMajorName(majorMapper.selectOne(wrapper2).getMajorName());
-                if (student.getSex().equals(0)) {
-                    studentVo.setSex("男");
-                } else {
-                    studentVo.setSex("女");
-                }
-                studentVoList.add(studentVo);
-            }
-            tableVo.setData(studentVoList);
         }
-        x=0;
         return tableVo;
 
     }
@@ -214,7 +204,8 @@ public class TeacherServiceImpl implements TeacherService {
 
         Choice choice1=choiceMapper.selectOne(wrapper1);
         choice1.setState(1);
-        return choiceMapper.updateById(choice1);
+        choiceMapper.updateById(choice1);
+        return evaluationTableMapper.insert(evaluationTable);
     }
 
 
