@@ -1,10 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" href="../../../resources/layuiadmin/layui/css/layui.css" media="all">
+    <title>工作评定</title>
 </head>
 <body>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn  layui-btn-warm btn-add layui-btn-sm">您的助教</button>
+        <button class="layui-btn layui-btn-sm" lay-event="refresh"><i class="layui-icon layui-icon-refresh-3"></i></button>
+    </div>
+</script>
+
+<script type="text/html" id="barDemo">
+    {{#  if(d.result == 0 || d.result == 1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal layui-btn-disabled" lay-event="pass">通过</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger layui-btn-disabled" lay-event="nopass">不通过</a>
+    {{# }else { }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="pass">通过</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="nopass">不通过</a>
+    {{# } }}
+</script>
+
+<script type="text/html" id="titleTpl">
+    {{#  if(d.result == 0){ }}
+    <span style="color: orangered">不通过</span>
+    {{#  }else if(d.result == 1){ }}
+    <span style="color: #33DF83">通过</span>
+    {{# }else { }}
+    <span style="color: #01AAED">待评定</span>
+    {{# } }}
+</script>
+
+<script src="../../../resources/layuiadmin/layui/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['layer', 'table'], function(){
+        var table = layui.table
+            ,layer = layui.layer
+            ,$ = layui.$;
+
+        //展示待审批课程列表
+        table.render({
+            elem: '#test'
+            ,url:'http://localhost:8080/teacher/teacherassistants'
+            ,unresize:true
+            ,method:'post'
+            ,toolbar: '#toolbarDemo'
+            ,cols: [[
+                {field:'studentId', title:'学生ID', fixed: 'left', sort: true}
+                ,{field:'studentName', title:'学生名'}
+                ,{field:'sex', title:'性别'}
+                ,{field:'phone', title:'联系电话'}
+                ,{field:'majorName', title:'专业'}
+                ,{field:'result',title:'评定结果',templet:'#titleTpl', sort: true}
+                ,{filed:'right', align:'center', toolbar: '#barDemo'}
+            ]]
+            ,page:false
+        });
+
+        //监听工具条
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+
+            if(obj.event === 'pass'){
+                layer.confirm('确认通过？',function (index) {
+                    $.ajax({
+                        url: 'http://localhost:8080/teacher/evaluate',
+                        type: "POST",
+                        data:{"studentId":data.studentId,"result":1},
+                        dataType: "json",
+                        success: function(data){
+                            table.reload('test');
+                        }
+                    });
+                })
+            }else if (obj.event === 'nopass'){
+                layer.confirm('确认不通过？',function (index) {
+                    $.ajax({
+                        url: 'http://localhost:8080/teacher/evaluate',
+                        type: "POST",
+                        data:{"studentId":data.studentId,"result":0},
+                        dataType: "json",
+                        success: function(data){
+                            table.reload('test');
+                        }
+                    });
+                })
+            }
+        });
+
+
+
+    });
+</script>
 
 </body>
 </html>
