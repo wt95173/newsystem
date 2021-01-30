@@ -3,14 +3,12 @@ package com.nsystem.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.nsystem.entity.Course;
-import com.nsystem.entity.LoginInformation;
-import com.nsystem.entity.TeacherCourse;
-import com.nsystem.mapper.CourseMapper;
-import com.nsystem.mapper.TeacherCourseMapper;
+import com.nsystem.entity.*;
+import com.nsystem.mapper.*;
 import com.nsystem.service.TeacherService;
 import com.nsystem.vo.CourseVo;
 import com.nsystem.vo.LoginVo;
+import com.nsystem.vo.StudentVo;
 import com.nsystem.vo.TableVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,15 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Autowired
     private CourseMapper courseMapper;
+
+    @Autowired
+    private ChoiceMapper choiceMapper;
+
+    @Autowired
+    private StudentMapper studentMapper;
+
+    @Autowired
+    private MajorMapper majorMapper;
 
     @Override
     public LoginVo getUserName(HttpSession session) {
@@ -75,4 +82,50 @@ public class TeacherServiceImpl implements TeacherService {
 
         return tableVo;
     }
+
+    @Override
+    public TableVo<StudentVo> getStudent(Integer page, Integer limit,Integer courseId) {
+        TableVo tableVo=new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("course_id",courseId);
+
+        QueryWrapper wrapper1=new QueryWrapper();
+        List<Choice> choiceList=choiceMapper.selectList(wrapper);
+        for(Choice choice:choiceList){
+            if(choice.getState()==0){
+                wrapper1.eq("student_id",choice.getStudentId());
+                wrapper1.or();
+            }
+        }
+        tableVo.setCount(studentMapper.selectCount(wrapper1));
+
+        IPage<Student> studentIPage=new Page<>(page,limit);
+        IPage<Student> result=studentMapper.selectPage(studentIPage,wrapper1);
+        List<Student> studentList=result.getRecords();
+        List<StudentVo> studentVoList=new ArrayList<>();
+
+        for(Student student:studentList){
+            StudentVo studentVo=new StudentVo();
+            BeanUtils.copyProperties(student,studentVo);
+            QueryWrapper wrapper2=new QueryWrapper();
+            wrapper2.eq("major_id",student.getMajorId());
+            studentVo.setMajorName(majorMapper.selectOne(wrapper2).getMajorName());
+            if(student.getSex().equals(0)){
+                studentVo.setSex("男");
+            }else{
+                studentVo.setSex("女");
+            }
+            studentVoList.add(studentVo);
+        }
+
+        tableVo.setData(studentVoList);
+        return tableVo;
+
+    }
+
+
+
 }
