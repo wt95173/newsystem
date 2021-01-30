@@ -75,9 +75,15 @@ public class AdminServiceImpl implements AdminService {
     public int appointStudent(Integer studentId,Integer courseId){
         EvaluationTable evaluationTable=new EvaluationTable();
         evaluationTable.setStudentId(studentId);
-        evaluationTable.setCourseId(courseId);
-        List<EvaluationTable> evaluationTableList=evaluationTableMapper.selectList(null);
-        evaluationTable.setEvaluationId(evaluationTableList.get(evaluationTableList.size()-1).getEvaluationId()+1);
-        return evaluationTableMapper.insert(evaluationTable);
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("course_id",courseId);
+        if(evaluationTableMapper.selectOne(wrapper)!=null){
+            return -1;
+        }else{
+            evaluationTable.setCourseId(courseId);
+            List<EvaluationTable> evaluationTableList=evaluationTableMapper.selectList(null);
+            evaluationTable.setEvaluationId(evaluationTableList.get(evaluationTableList.size()-1).getEvaluationId()+1);
+            return evaluationTableMapper.insert(evaluationTable);
+        }
     }
 }
