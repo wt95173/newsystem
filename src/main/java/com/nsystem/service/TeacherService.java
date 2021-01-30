@@ -14,4 +14,8 @@ public interface TeacherService {
     public TableVo<CourseVo> getCourse(Integer page, Integer limit,HttpSession session);
 
     public TableVo<StudentVo> getStudent(Integer page, Integer limit,  Integer courseId);
+
+    public TableVo<StudentVo> getChoiceStudent(Integer page, Integer limit,  Integer courseId);
+
+    public int passStudent(Integer studentId,Integer courseId);
 }

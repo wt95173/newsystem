@@ -34,4 +34,16 @@ public class TeacherController {
         return teacherService.getStudent(page, limit, courseId);
     }
 
+    @RequestMapping("/courseassistant")
+    public TableVo getChoiceStudent(Integer page, Integer limit,  Integer courseId){
+        return teacherService.getChoiceStudent(page, limit, courseId);
+    }
+
+    @RequestMapping("/pass")
+    public int passStudent(Integer studentId, Integer courseId){
+        return teacherService.passStudent(studentId, courseId);
+    }
+
+
+
 }

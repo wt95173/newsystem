@@ -37,6 +37,9 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private MajorMapper majorMapper;
 
+    @Autowired
+    private EvaluationTableMapper evaluationTableMapper;
+
     @Override
     public LoginVo getUserName(HttpSession session) {
         LoginInformation loginInformation=(LoginInformation) session.getAttribute("teacher");
@@ -135,6 +138,84 @@ public class TeacherServiceImpl implements TeacherService {
         return tableVo;
     }
 
+    @Override
+    public TableVo<StudentVo> getChoiceStudent(Integer page, Integer limit, Integer courseId) {
+        TableVo tableVo = new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+        int x=0;
+
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("course_id", courseId);
+
+        List<Choice> choiceList = choiceMapper.selectList(wrapper);
+
+        QueryWrapper wrapper1 = new QueryWrapper();
+        for (Choice choice : choiceList) {
+            if (choice.getState()==1) {
+                x++;
+                wrapper1.eq("student_id", choice.getStudentId());
+                wrapper1.or();
+            }
+        }
+
+        if (x==0) {
+            tableVo.setCount(0);
+            tableVo.setData(null);
+
+        } else {
+            tableVo.setCount(studentMapper.selectCount(wrapper1));
+            IPage<Student> studentIPage = new Page<>(page, limit);
+            IPage<Student> result = studentMapper.selectPage(studentIPage, wrapper1);
+            List<Student> studentList = result.getRecords();
+            List<StudentVo> studentVoList = new ArrayList<>();
+
+            for (Student student : studentList) {
+                StudentVo studentVo = new StudentVo();
+                BeanUtils.copyProperties(student, studentVo);
+                QueryWrapper wrapper2 = new QueryWrapper();
+                wrapper2.eq("major_id", student.getMajorId());
+                studentVo.setMajorName(majorMapper.selectOne(wrapper2).getMajorName());
+                if (student.getSex().equals(0)) {
+                    studentVo.setSex("男");
+                } else {
+                    studentVo.setSex("女");
+                }
+                studentVoList.add(studentVo);
+            }
+            tableVo.setData(studentVoList);
+        }
+        x=0;
+        return tableVo;
+
+    }
+
+    @Override
+    public int passStudent(Integer studentId, Integer courseId) {
+        EvaluationTable evaluationTable=new EvaluationTable();
+        evaluationTable.setStudentId(studentId);
+        evaluationTable.setCourseId(courseId);
+        List<EvaluationTable> evaluationTableList=evaluationTableMapper.selectList(null);
+        evaluationTable.setEvaluationId(evaluationTableList.get(evaluationTableList.size()-1).getEvaluationId()+1);
+
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("course_id",courseId);
+        wrapper.ne("student_id",studentId);
+
+        List<Choice> choiceList=choiceMapper.selectList(wrapper);
+        for(Choice choice:choiceList){
+            choice.setState(2);
+            choiceMapper.updateById(choice);
+        }
+
+        QueryWrapper wrapper1=new QueryWrapper();
+        wrapper1.eq("course_id",courseId);
+        wrapper1.eq("student_id",studentId);
+
+        Choice choice1=choiceMapper.selectOne(wrapper1);
+        choice1.setState(1);
+        return choiceMapper.updateById(choice1);
+    }
 
 
 }
