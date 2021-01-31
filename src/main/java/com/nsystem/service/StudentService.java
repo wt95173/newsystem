@@ -25,4 +25,6 @@ public interface StudentService {
     public TableVo<Project> getMyProjects(HttpSession session);
 
     public TableVo<ProjectRecord> getRecord(Integer page,Integer limit,String projectId,HttpSession session);
+
+    public int setRecord(String projectId,String recordTitle,String recordInfo,String recordResolve,HttpSession session);
 }
