@@ -10,6 +10,9 @@
 </head>
 <body>
 
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+
 <div id="show_div" style="display: none;" align="center">
     <div style="padding:20px">
         <form class="layui-form" action="">
@@ -35,12 +38,10 @@
     </div>
 </div>
 
-<table class="layui-hide" id="test" lay-filter="test"></table>
-
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
         <button class="layui-btn  layui-btn-warm btn-add layui-btn-sm" lay-event="add"> <i class="layui-icon">&#xe608;</i> 添加</button>
-        <button class="layui-btn layui-btn-sm" lay-event="refresh"><i class="layui-icon layui-icon-refresh-3"></i></button>
+        <a class="layui-btn  layui-btn-normal layui-btn-sm" href="JavaScript:history.back(-1)">返回</a>
     </div>
 </script>
 
@@ -55,9 +56,27 @@
         searchURL = searchURL.substring(1, searchURL.length);
         var projectId = searchURL.split("&")[0].split("=")[1];
 
-        table.on('tool(test)', function(obj){
-            var data = obj.data;
 
+        table.render({
+            elem: '#test'
+            ,url:'http://localhost:8080/student/record'
+            ,toolbar: '#toolbarDemo'
+            ,unresize:true
+            ,where:{
+                "projectId":projectId
+            }
+            ,cols: [[
+                {field:'recordTitle', title:'日志标题', fixed: 'left'}
+                ,{field:'recordInfo', title:'日志详情'}
+                ,{field:'recordResolve', title:'解决方法'}
+            ]]
+            ,page:{				//分页设置
+                limit:5,		//默认每一页显示数量
+                limits:[5,10,20,30,40,50]		//可选择每页显示的数量
+            }
+        });
+
+        table.on('toolbar(test)', function(obj){
             if (obj.event === 'add'){
                 layer.open({
                     type: 1,
@@ -102,24 +121,6 @@
             }
         });
 
-        table.render({
-            elem: '#test'
-            ,url:'http://localhost:8080/student/record'
-            ,toolbar: '#toolbarDemo'
-            ,unresize:true
-            ,where:{
-                "projectId":projectId
-            }
-            ,cols: [[
-                {field:'recordTitle', title:'日志标题', fixed: 'left'}
-                ,{field:'recordInfo', title:'日志详情'}
-                ,{field:'recordResolve', title:'解决方法'}
-            ]]
-            ,page:{				//分页设置
-                limit:5,		//默认每一页显示数量
-                limits:[5,10,20,30,40,50]		//可选择每页显示的数量
-            }
-        });
 
 
 
