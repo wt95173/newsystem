@@ -44,11 +44,12 @@
     </div>
 </script>
 
-<script src="../../../../resources/layuiadmin/layui/layui.all.js" charset="utf-8"></script>
+<script src="../../../../resources/layuiadmin/layui/layui.js" charset="utf-8"></script>
 <script>
     layui.use(['layer', 'table'], function(){
         var table = layui.table
-            ,layer = layui.layer;
+            ,layer = layui.layer
+            ,$ = layui.$;
 
         var searchURL = window.location.search;
         searchURL = searchURL.substring(1, searchURL.length);
