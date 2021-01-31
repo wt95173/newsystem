@@ -11,27 +11,31 @@
 <body>
 
 <div id="show_div" style="display: none;" align="center">
-    <form method="post">
-        <div >
-            <div >
-                <div style="padding:20px">
-                    <div style="margin-left: 75px; float: left">
-                        <input type="radio" name="level" id="firstchoice" value="1"/>第一志愿
-                    </div>
-                    <div style="margin-right: 75px;float: right">
-                        <input type="radio" name="level" id="secondchoice" value="2">第二志愿
-                    </div>
+    <div style="padding:20px">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">日志标题</label>
+                <div class="layui-input-block">
+                    <input type="text" name="recordTitle" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
                 </div>
             </div>
-        </div>
-    </form>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">日志详情</label>
+                <div class="layui-input-block">
+                    <textarea name="recordInfo" placeholder="请输入内容" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">解决方法</label>
+                <div class="layui-input-block">
+                    <textarea name="recordResolve" placeholder="请输入内容" class="layui-textarea"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 <table class="layui-hide" id="test" lay-filter="test"></table>
-
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="detail">查看日志</a>
-</script>
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
@@ -56,29 +60,32 @@
             if (obj.event === 'add'){
                 layer.open({
                     type: 1,
-                    area: ['390px', '150px'],
+                    // area: ['390px', '150px'],
                     title: '添加日志',
                     shadeClose: false, //点击遮罩关闭
                     content: $('#show_div'),
                     btn:["添加","关闭"],
                     yes: function (index,layero) {
-                        var level = $("input[name='level']:checked").val();
+                        var recordTitle = $("input[name='recordTitle']").val();
+                        var recordInfo = $("input[name='recordInfo']").val();
+                        var recordResolve = $("input[name='recordResolve']").val();
+
                         $.ajax({
                             url: "http://localhost:8080/student/apply",
                             type: "POST",
-                            data:{"courseId":data.courseId,"level":level},
+                            data:{"projectId":projectId,"recordTitle":recordTitle,
+                                "recordInfo":recordInfo, "recordResolve":recordResolve},
                             dataType: "json",
-                            success: function(data){
-                                if (data== -1){
-                                    layer.msg("申请失败", {icon: 5});
+                            success: function(res){
+                                if (res== -1){
+                                    layer.msg("添加失败", {icon: 5});
                                 }else{
                                     table.reload('test');
-                                    table.reload('choice_table');
-                                    layer.msg("申请成功", {icon: 6});
+                                    layer.msg("添加成功", {icon: 6});
                                 }
                             },
                             error:function (){
-                                layer.msg("申请失败", {icon: 5});
+                                layer.msg("添加失败", {icon: 5});
                             }
                         });
                         var i;
@@ -87,15 +94,11 @@
                         }
                         layer.close(index);
                     },
-                    btn2:function () {
-                        var i;
-                        for (i = 0; (i < document.forms.length); i++) {
-                            document.forms[i].reset();
-                        }
+                    btn2:function (index) {
+                        layer.close(index);
                     }
                 });
             }
-
         });
 
         table.render({
@@ -110,7 +113,6 @@
                 {field:'recordTitle', title:'日志标题', fixed: 'left'}
                 ,{field:'recordInfo', title:'日志详情'}
                 ,{field:'recordResolve', title:'解决方法'}
-                ,{filed:'right', align:'center', toolbar: '#barDemo'}
             ]]
             ,page:{				//分页设置
                 limit:5,		//默认每一页显示数量
