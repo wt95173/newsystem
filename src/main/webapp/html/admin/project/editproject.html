@@ -103,6 +103,10 @@
                         layer.close(index);
                     },
                     btn2:function (index) {
+                        var i;
+                        for (i = 0; (i < document.forms.length); i++) {
+                            document.forms[i].reset();
+                        }
                         layer.close(index);
                     }
                 })
@@ -155,6 +159,10 @@
                         layer.close(index);
                     },
                     btn2:function (index) {
+                        var i;
+                        for (i = 0; (i < document.forms.length); i++) {
+                            document.forms[i].reset();
+                        }
                         layer.close(index);
                     }
                 })
