@@ -14,17 +14,42 @@
 
 <div id="show_div" style="display: none;" align="center">
     <div style="padding:20px">
-        <form name="project" id="project" class="layui-form" action="">
+        <form name="project" class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">项目id：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="projectId" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">项目类型：</label>
                 <div class="layui-input-block">
-                    <input type="text" name="projectType" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                    <input type="text" name="projectType" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">项目名：</label>
                 <div class="layui-input-block">
-                    <input type="text" name="projectName" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                    <input type="text" name="projectName" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="show_div2" style="display: none;" align="center">
+    <div style="padding:20px">
+        <form name="project" lay-filter="project" class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">项目类型：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="projectType" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">项目名：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="projectName" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
                 </div>
             </div>
         </form>
@@ -33,7 +58,7 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn  layui-btn-warm btn-add layui-btn-sm" lay-event="add"> 添加项目</button>
+        <button id="tag" class="layui-btn  layui-btn-warm btn-add layui-btn-sm" lay-event="add"> 添加项目</button>
     </div>
 </script>
 
@@ -66,51 +91,49 @@
             }
         });
 
-        table.on('toolbar(test)',function (obj) {
-            if(obj.event === 'add'){
-                layer.open({
-                    type: 1,
-                    // area: ['390px', '150px'],
-                    title: '添加项目',
-                    shadeClose: false, //点击遮罩关闭
-                    content: $('#show_div'),
-                    btn:["添加","关闭"],
-                    yes: function (index,layero) {
-                        var projectType = $("input[name='projectType']").val();
-                        var projectName = $("input[name='projectName']").val();
+        $("#tag").on("click",function () {
+            layer.open({
+                type: 1,
+                title: '添加项目',
+                shadeClose: false, //点击遮罩关闭
+                content: $('#show_div'),
+                btn:["添加","关闭"],
+                yes: function (index,layero) {
+                    var projectId = $("input[name='projectId']").val();
+                    var projectType = $("input[name='projectType']").val();
+                    var projectName = $("input[name='projectName']").val();
 
-                        $.ajax({
-                            url: "http://localhost:8080/admin/addproject",
-                            type: "POST",
-                            data:{"projectType":projectType, "projectName":projectName},
-                            dataType: "json",
-                            success: function(res){
-                                if (res== -1){
-                                    layer.msg("添加失败", {icon: 5});
-                                }else{
-                                    table.reload('test');
-                                    layer.msg("添加成功", {icon: 6});
-                                }
-                            },
-                            error:function (){
+                    $.ajax({
+                        url: "http://localhost:8080/admin/addproject",
+                        type: "POST",
+                        data:{"projectId":projectId, "projectType":projectType, "projectName":projectName},
+                        dataType: "json",
+                        success: function(res){
+                            if (res== -1){
                                 layer.msg("添加失败", {icon: 5});
+                            }else{
+                                table.reload('test');
+                                layer.msg("添加成功", {icon: 6});
                             }
-                        });
-                        var i;
-                        for (i = 0; (i < document.forms.length); i++) {
-                            document.forms[i].reset();
+                        },
+                        error:function (){
+                            layer.msg("添加失败", {icon: 5});
                         }
-                        layer.close(index);
-                    },
-                    btn2:function (index) {
-                        var i;
-                        for (i = 0; (i < document.forms.length); i++) {
-                            document.forms[i].reset();
-                        }
-                        layer.close(index);
+                    });
+                    var i;
+                    for (i = 0; (i < document.forms.length); i++) {
+                        document.forms[i].reset();
                     }
-                })
-            }
+                    layer.close(index);
+                },
+                btn2:function (index) {
+                    var i;
+                    for (i = 0; (i < document.forms.length); i++) {
+                        document.forms[i].reset();
+                    }
+                    layer.close(index);
+                }
+            })
         })
 
         table.on('tool(test)', function(obj){
@@ -125,10 +148,9 @@
 
                 layer.open({
                     type: 1,
-                    // area: ['390px', '150px'],
                     title: '编辑项目',
                     shadeClose: false, //点击遮罩关闭
-                    content: $('#show_div'),
+                    content: $('#show_div2'),
                     btn:["编辑","关闭"],
                     yes: function (index,layero) {
                         var projectType = $("input[name='projectType']").val();
@@ -137,8 +159,7 @@
                         $.ajax({
                             url: "http://localhost:8080/admin/editproject",
                             type: "POST",
-                            data:{"projectId":data.projectId,"projectType":projectType,
-                                "projectName":projectName},
+                            data:{"projectType":projectType, "projectName":projectName},
                             dataType: "json",
                             success: function(res){
                                 if (res== -1){
@@ -166,22 +187,6 @@
                         layer.close(index);
                     }
                 })
-
-
-
-
-                // layer.confirm('确认添加？',function (index) {
-                //     $.ajax({
-                //         url: 'http://localhost:8080/admin/editproject',
-                //         type: "POST",
-                //         data:{"projectId":data.projectId},
-                //         dataType: "json",
-                //         success: function(){
-                //             layer.close(index);
-                //             table.reload('test');
-                //         }
-                //     });
-                // })
             }
 
         })
