@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="../../../../resources/layuiadmin/layui/css/layui.css" media="all">
     <title>项目日志</title>
 </head>
-<body>
+<body class="body">
 
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
@@ -47,10 +47,11 @@
 
 <script src="../../../../resources/layuiadmin/layui/layui.js" charset="utf-8"></script>
 <script>
-    layui.use(['layer', 'table'], function(){
+    layui.use(['form','layer', 'table'], function(){
         var table = layui.table
             ,layer = layui.layer
-            ,$ = layui.$;
+            ,$ = layui.$
+            ,form = layui.form;
 
         var searchURL = window.location.search;
         searchURL = searchURL.substring(1, searchURL.length);
@@ -69,6 +70,7 @@
                 {field:'recordTitle', title:'日志标题', fixed: 'left'}
                 ,{field:'recordInfo', title:'日志详情'}
                 ,{field:'recordResolve', title:'解决方法'}
+                // ,{filed:'right', align:'center', toolbar: '#toolbarDemo'}
             ]]
             ,page:{				//分页设置
                 limit:5,		//默认每一页显示数量
@@ -76,50 +78,69 @@
             }
         });
 
+        //监听事件
         table.on('toolbar(test)', function(obj){
-            if (obj.event === 'add'){
-                layer.open({
-                    type: 1,
-                    // area: ['390px', '150px'],
-                    title: '添加日志',
-                    shadeClose: false, //点击遮罩关闭
-                    content: $('#show_div'),
-                    btn:["添加","关闭"],
-                    yes: function (index,layero) {
-                        var recordTitle = $("input[name='recordTitle']").val();
-                        var recordInfo = $("input[name='recordInfo']").val();
-                        var recordResolve = $("input[name='recordResolve']").val();
-
-                        $.ajax({
-                            url: "http://localhost:8080/student/apply",
-                            type: "POST",
-                            data:{"projectId":projectId,"recordTitle":recordTitle,
-                                "recordInfo":recordInfo, "recordResolve":recordResolve},
-                            dataType: "json",
-                            success: function(res){
-                                if (res== -1){
-                                    layer.msg("添加失败", {icon: 5});
-                                }else{
-                                    table.reload('test');
-                                    layer.msg("添加成功", {icon: 6});
-                                }
-                            },
-                            error:function (){
-                                layer.msg("添加失败", {icon: 5});
-                            }
-                        });
-                        var i;
-                        for (i = 0; (i < document.forms.length); i++) {
-                            document.forms[i].reset();
-                        }
-                        layer.close(index);
-                    },
-                    btn2:function (index) {
-                        layer.close(index);
-                    }
-                });
-            }
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'add':
+                    layer.open({
+                        type: 1,
+                        title: '新增选课学生',
+                        shadeClose: false, //点击遮罩关闭
+                        content: $('#show_div')
+                    });
+                    break;
+                case 'refresh':
+                    layer.msg('刷新');
+                    table.reload('test');
+                    break;
+            };
         });
+
+        // table.on('toolbar(test)', function(obj){
+        //     if (obj.event === 'add'){
+        //         layer.open({
+        //             type: 1,
+        //             // area: ['390px', '150px'],
+        //             title: '添加日志',
+        //             shadeClose: false, //点击遮罩关闭
+        //             content: $('#show_div'),
+        //             btn:["添加","关闭"],
+        //             yes: function (index,layero) {
+        //                 var recordTitle = $("input[name='recordTitle']").val();
+        //                 var recordInfo = $("input[name='recordInfo']").val();
+        //                 var recordResolve = $("input[name='recordResolve']").val();
+        //
+        //                 $.ajax({
+        //                     url: "http://localhost:8080/student/apply",
+        //                     type: "POST",
+        //                     data:{"projectId":projectId,"recordTitle":recordTitle,
+        //                         "recordInfo":recordInfo, "recordResolve":recordResolve},
+        //                     dataType: "json",
+        //                     success: function(res){
+        //                         if (res== -1){
+        //                             layer.msg("添加失败", {icon: 5});
+        //                         }else{
+        //                             table.reload('test');
+        //                             layer.msg("添加成功", {icon: 6});
+        //                         }
+        //                     },
+        //                     error:function (){
+        //                         layer.msg("添加失败", {icon: 5});
+        //                     }
+        //                 });
+        //                 var i;
+        //                 for (i = 0; (i < document.forms.length); i++) {
+        //                     document.forms[i].reset();
+        //                 }
+        //                 layer.close(index);
+        //             },
+        //             btn2:function (index) {
+        //                 layer.close(index);
+        //             }
+        //         });
+        //     }
+        // });
 
 
 

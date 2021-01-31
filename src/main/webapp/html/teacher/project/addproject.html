@@ -45,7 +45,7 @@
             if(obj.event === 'add'){
                 layer.confirm('确认添加？',function (index) {
                     $.ajax({
-                        url: 'http://localhost:8080/student/addproject',
+                        url: 'http://localhost:8080/teacher/addproject',
                         type: "POST",
                         data:{"projectId":data.projectId},
                         dataType: "json",
