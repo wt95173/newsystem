@@ -80,8 +80,4 @@ public class TeacherController {
     public TableVo getStudent2(String projectId){
         return teacherService.getStudent2(projectId);
     }
-
-
-
-
 }

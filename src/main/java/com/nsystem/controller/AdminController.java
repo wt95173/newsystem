@@ -1,6 +1,7 @@
 package com.nsystem.controller;
 
 import com.nsystem.entity.LoginInformation;
+import com.nsystem.entity.Project;
 import com.nsystem.service.AdminService;
 import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.TableVo;
@@ -31,6 +32,16 @@ public class AdminController {
     @RequestMapping("/appoint")
     public int appointStudent(Integer studentId,Integer courseId) {
         return adminService.appointStudent(studentId, courseId);
+    }
+
+    @RequestMapping("/projects")
+    public TableVo getProject(Integer page,Integer limit){
+        return adminService.getProject(page, limit);
+    }
+
+    @RequestMapping("editproject")
+    public int editProject(String projectId,String projectType,String projectName){
+        return adminService.editProject(projectId, projectType, projectName);
     }
 
 }

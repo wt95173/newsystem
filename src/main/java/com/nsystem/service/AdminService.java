@@ -1,6 +1,7 @@
 package com.nsystem.service;
 
 import com.nsystem.entity.Choice;
+import com.nsystem.entity.Project;
 import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.StudentVo;
 import com.nsystem.vo.TableVo;
@@ -13,4 +14,8 @@ public interface AdminService {
     public TableVo<StudentVo> getStudent(Integer page,Integer limit);
 
     public int appointStudent(Integer studentId,Integer courseId);
+
+    public TableVo<Project> getProject(Integer page,Integer limit);
+
+    public int editProject(String projectId,String projectType,String projectName);
 }

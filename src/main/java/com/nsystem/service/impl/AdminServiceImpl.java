@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.nsystem.entity.*;
 import com.nsystem.mapper.EvaluationTableMapper;
 import com.nsystem.mapper.MajorMapper;
+import com.nsystem.mapper.ProjectMapper;
 import com.nsystem.mapper.StudentMapper;
 import com.nsystem.service.AdminService;
 import com.nsystem.vo.LoginVo;
@@ -29,6 +30,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private MajorMapper majorMapper;
+
+    @Autowired
+    private ProjectMapper projectMapper;
 
     @Override
     public LoginVo getUserName(HttpSession session) {
@@ -85,5 +89,30 @@ public class AdminServiceImpl implements AdminService {
             evaluationTable.setEvaluationId(evaluationTableList.get(evaluationTableList.size()-1).getEvaluationId()+1);
             return evaluationTableMapper.insert(evaluationTable);
         }
+    }
+
+    @Override
+    public TableVo<Project> getProject(Integer page, Integer limit) {
+        TableVo tableVo=new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+
+        IPage<Project> projectIPage=new Page<>(page,limit);
+        IPage<Project> result=projectMapper.selectPage(projectIPage,null);
+        List<Project> projectList=result.getRecords();
+        tableVo.setCount(projectMapper.selectCount(null));
+        tableVo.setData(projectList);
+
+        return tableVo;
+    }
+
+    @Override
+    public int editProject(String projectId, String projectType, String projectName) {
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("project_id",projectId);
+        Project project=projectMapper.selectOne(wrapper);
+        project.setProjectType(projectType);
+        project.setProjectName(projectName);
+        return projectMapper.updateById(project);
     }
 }
