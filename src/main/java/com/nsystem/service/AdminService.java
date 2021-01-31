@@ -18,4 +18,6 @@ public interface AdminService {
     public TableVo<Project> getProject(Integer page,Integer limit);
 
     public int editProject(String projectId,String projectType,String projectName);
+
+    public int addProject(String projectId,String projectType, String projectName);
 }

@@ -115,4 +115,20 @@ public class AdminServiceImpl implements AdminService {
         project.setProjectName(projectName);
         return projectMapper.updateById(project);
     }
+
+    @Override
+    public int addProject(String projectId,String projectType, String projectName) {
+        Project project=new Project();
+        project.setProjectName(projectName);
+        project.setProjectType(projectType);
+        project.setProjectId(projectId);
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("project_id",projectId);
+        if(projectMapper.selectOne(wrapper)!=null){
+            return -1;
+        }else{
+            return projectMapper.insert(project);
+        }
+
+    }
 }
