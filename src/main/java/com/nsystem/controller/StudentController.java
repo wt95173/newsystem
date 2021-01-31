@@ -62,8 +62,9 @@ public class StudentController {
         return studentService.getRecord(page, limit, projectId, session);
     }
 
-
-
-
+    @RequestMapping("/addrecord")
+    public int setRecord(String projectId, String recordTitle, String recordInfo, String recordResolve,HttpSession session){
+        return studentService.setRecord(projectId, recordTitle, recordInfo, recordResolve, session);
+    }
 
 }
