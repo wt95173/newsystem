@@ -256,18 +256,19 @@ public class StudentServiceImpl implements StudentService {
         wrapper.eq("student_id",studentId);
 
         QueryWrapper wrapper1=new QueryWrapper();
-        List<StudentProject> studentProjectList=studentProjectMapper.selectList(wrapper);
-        for(StudentProject studentProject:studentProjectList){
-            wrapper1.eq("project_id",studentProject.getProjectId());
-            wrapper1.or();
+        if(studentProjectMapper.selectList(wrapper).size()!=0){
+            List<StudentProject> studentProjectList=studentProjectMapper.selectList(wrapper);
+            for(StudentProject studentProject:studentProjectList){
+                wrapper1.eq("project_id",studentProject.getProjectId());
+                wrapper1.or();
+            }
+            List<Project> projectList=projectMapper.selectList(wrapper1);
+            tableVo.setCount(projectList.size());
+            tableVo.setData(projectList);
+        }else{
+
         }
-
-        List<Project> projectList=projectMapper.selectList(wrapper1);
-
-        tableVo.setCount(projectList.size());
-        tableVo.setData(projectList);
         return tableVo;
-
     }
 
     @Override
@@ -281,17 +282,34 @@ public class StudentServiceImpl implements StudentService {
         wrapper.eq("project_id",projectId);
         wrapper.eq("student_id",studentId);
         Integer spid=studentProjectMapper.selectOne(wrapper).getSpid();
-
         QueryWrapper wrapper1=new QueryWrapper();
         wrapper1.eq("spid",spid);
-
         IPage<ProjectRecord> projectRecordIPage=new Page<>(page,limit);
         IPage<ProjectRecord> result=projectRecordMapper.selectPage(projectRecordIPage,wrapper1);
         List<ProjectRecord> projectRecordList=result.getRecords();
-
         tableVo.setCount(projectRecordMapper.selectCount(wrapper1));
         tableVo.setData(projectRecordList);
-
         return tableVo;
+    }
+
+    @Override
+    public int setRecord(String projectId, String recordTitle, String recordInfo, String recordResolve,HttpSession session) {
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
+        Integer studentId=loginInformation.getRelativeId();
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("project_id",projectId);
+        wrapper.eq("student_id",studentId);
+        Integer spid=studentProjectMapper.selectOne(wrapper).getSpid();
+
+        ProjectRecord projectRecord=new ProjectRecord();
+        projectRecord.setRecordInfo(recordInfo);
+        projectRecord.setRecordResolve(recordResolve);
+        projectRecord.setRecordTitle(recordTitle);
+
+        List<ProjectRecord> projectRecordList=projectRecordMapper.selectList(null);
+        projectRecord.setSpid(spid);
+        projectRecord.setPrid(projectRecordList.get(projectRecordList.size()-1).getPrid()+1);
+
+        return projectRecordMapper.insert(projectRecord);
     }
 }
