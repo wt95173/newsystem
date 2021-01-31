@@ -101,7 +101,7 @@
                         var recordResolve = $("input[name='recordResolve']").val();
 
                         $.ajax({
-                            url: "http://localhost:8080/student/apply",
+                            url: "http://localhost:8080/student/addrecord",
                             type: "POST",
                             data:{"projectId":projectId,"recordTitle":recordTitle,
                                 "recordInfo":recordInfo, "recordResolve":recordResolve},
