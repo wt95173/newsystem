@@ -52,4 +52,18 @@ public class StudentController {
         return studentService.participation(projectId, session);
     }
 
+    @RequestMapping("/myprojects")
+    public TableVo getMyProject(HttpSession session){
+        return studentService.getMyProjects(session);
+    }
+
+    @RequestMapping("/record")
+    public TableVo getRecord(Integer page,Integer limit,String projectId,HttpSession session){
+        return studentService.getRecord(page, limit, projectId, session);
+    }
+
+
+
+
+
 }

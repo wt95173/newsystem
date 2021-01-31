@@ -2,6 +2,7 @@ package com.nsystem.service;
 
 import com.nsystem.entity.Choice;
 import com.nsystem.entity.Project;
+import com.nsystem.entity.ProjectRecord;
 import com.nsystem.vo.CourseVo;
 import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.TableVo;
@@ -21,4 +22,7 @@ public interface StudentService {
 
     public int participation(String projectId,HttpSession session);
 
+    public TableVo<Project> getMyProjects(HttpSession session);
+
+    public TableVo<ProjectRecord> getRecord(Integer page,Integer limit,String projectId,HttpSession session);
 }
