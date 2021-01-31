@@ -1,9 +1,7 @@
 package com.nsystem.service;
 
-import com.nsystem.vo.CourseVo;
-import com.nsystem.vo.LoginVo;
-import com.nsystem.vo.StudentVo;
-import com.nsystem.vo.TableVo;
+import com.nsystem.entity.Project;
+import com.nsystem.vo.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,4 +20,16 @@ public interface TeacherService {
     public TableVo<StudentVo> getTeacherStudent(HttpSession session);
 
     public int passTeacherStudent(Integer studentId,Integer result);
+
+    public TableVo<Project> getMyProject(HttpSession session);
+
+    public TableVo<Project> getProject(Integer page, Integer limit,HttpSession session);
+
+    public int addProject(String projectId,HttpSession session);
+
+    public TableVo<RecordVo> getRecord(Integer page, Integer limit,String projectId);
+
+    public TableVo<StudentVo> getStudent2(String projectId);
+
+
 }
