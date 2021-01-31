@@ -159,7 +159,7 @@
                         $.ajax({
                             url: "http://localhost:8080/admin/editproject",
                             type: "POST",
-                            data:{"projectType":projectType, "projectName":projectName},
+                            data:{"projectId":data.projectId,"projectType":projectType, "projectName":projectName},
                             dataType: "json",
                             success: function(res){
                                 if (res== -1){
