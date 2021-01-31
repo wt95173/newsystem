@@ -44,4 +44,9 @@ public class AdminController {
         return adminService.editProject(projectId, projectType, projectName);
     }
 
+    @RequestMapping("addproject")
+    public int addProject(String projectId,String projectType, String projectName){
+        return adminService.addProject(projectId, projectType, projectName);
+    }
+
 }
