@@ -42,5 +42,14 @@ public class StudentController {
         return studentService.getChoice(session);
     }
 
+    @RequestMapping("/projects")
+    public TableVo getProject(Integer page, Integer limit,HttpSession session){
+        return studentService.getProjects(page,limit,session);
+    }
+
+    @RequestMapping("/participation")
+    public int participation(String projectId,HttpSession session){
+        return studentService.participation(projectId, session);
+    }
 
 }

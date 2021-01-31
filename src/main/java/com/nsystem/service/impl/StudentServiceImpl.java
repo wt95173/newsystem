@@ -3,13 +3,8 @@ package com.nsystem.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.nsystem.entity.Choice;
-import com.nsystem.entity.Course;
-import com.nsystem.entity.EvaluationTable;
-import com.nsystem.entity.LoginInformation;
-import com.nsystem.mapper.ChoiceMapper;
-import com.nsystem.mapper.CourseMapper;
-import com.nsystem.mapper.EvaluationTableMapper;
+import com.nsystem.entity.*;
+import com.nsystem.mapper.*;
 import com.nsystem.service.StudentService;
 import com.nsystem.vo.CourseVo;
 import com.nsystem.vo.LoginVo;
@@ -34,6 +29,12 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private ChoiceMapper choiceMapper;
+
+    @Autowired
+    private StudentProjectMapper studentProjectMapper;
+
+    @Autowired
+    private ProjectMapper projectMapper;
 
     @Override
     public LoginVo getUserName(HttpSession session) {
@@ -194,5 +195,49 @@ public class StudentServiceImpl implements StudentService {
         tableVo.setMsg("");
         tableVo.setCount(choiceList.size());
         return tableVo;
+    }
+
+    @Override
+    public TableVo<Project> getProjects(Integer page,Integer limit, HttpSession session) {
+        TableVo tableVo=new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
+        Integer studentId=loginInformation.getRelativeId();
+
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("student_id",studentId);
+
+        QueryWrapper wrapper1=new QueryWrapper();
+        if(studentProjectMapper.selectList(wrapper)!=null){
+            List<StudentProject>  studentProjectList=studentProjectMapper.selectList(wrapper);
+            for(StudentProject studentProject:studentProjectList){
+                wrapper1.ne("project_id",studentProject.getProjectId());
+            }
+            IPage<Project> projectIPage=new Page<>(page,limit);
+            IPage<Project> result=projectMapper.selectPage(projectIPage,wrapper1);
+            List<Project> projectList=result.getRecords();
+
+            tableVo.setCount(projectMapper.selectCount(wrapper1));
+            tableVo.setData(projectList);
+        }else{
+
+        }
+        return tableVo;
+    }
+
+    @Override
+    public int participation(String projectId, HttpSession session) {
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
+        Integer studentId=loginInformation.getRelativeId();
+        //QueryWrapper wrapper=new QueryWrapper();
+        //wrapper.eq("student_id",studentId);
+        StudentProject studentProject=new StudentProject();
+        studentProject.setProjectId(projectId);
+        studentProject.setStudentId(studentId);
+        List<StudentProject> studentProjectList=studentProjectMapper.selectList(null);
+        studentProject.setSpid(studentProjectList.get(studentProjectList.size()-1).getSpid()+1);
+        return studentProjectMapper.insert(studentProject);
     }
 }
