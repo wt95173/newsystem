@@ -89,8 +89,8 @@
                 btn:["添加","关闭"],
                 yes: function (index,layero) {
                     var recordTitle = $("input[name='recordTitle']").val();
-                    var recordInfo = $("input[name='recordInfo']").val();
-                    var recordResolve = $("input[name='recordResolve']").val();
+                    var recordInfo = $("textarea[name='recordInfo']").val();
+                    var recordResolve = $("textarea[name='recordResolve']").val();
 
                     $.ajax({
                         url: "http://localhost:8080/student/addrecord",
