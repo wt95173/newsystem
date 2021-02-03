@@ -80,6 +80,7 @@
 
 
         $("#tag").on("click",function () {
+
             layer.open({
                 type: 1,
                 // area: ['390px', '150px'],
@@ -91,35 +92,43 @@
                     var recordTitle = $("input[name='recordTitle']").val();
                     var recordInfo = $("textarea[name='recordInfo']").val();
                     var recordResolve = $("textarea[name='recordResolve']").val();
-
-                    $.ajax({
-                        url: "http://localhost:8080/student/addrecord",
-                        type: "POST",
-                        data:{"projectId":projectId,"recordTitle":recordTitle,
-                            "recordInfo":recordInfo, "recordResolve":recordResolve},
-                        dataType: "json",
-                        success: function(res){
-                            if (res== -1){
-                                layer.msg("添加失败", {icon: 5});
-                            }else{
-                                table.reload('test');
-                                layer.msg("添加成功", {icon: 6});
-                            }
-                        },
-                        error:function (){
-                            layer.msg("添加失败", {icon: 5});
-                        }
-                    });
-                    var i;
-                    for (i = 0; (i < document.forms.length); i++) {
-                        document.forms[i].reset();
+                    if (recordTitle=='' || recordInfo=='' || recordResolve==''){
+                        layer.msg("输入不能为空", {icon: 5});
                     }
-                    layer.close(index);
+                    else{
+                        $.ajax({
+                            url: "http://localhost:8080/student/addrecord",
+                            type: "POST",
+                            data:{"projectId":projectId,"recordTitle":recordTitle,
+                                "recordInfo":recordInfo, "recordResolve":recordResolve},
+                            dataType: "json",
+                            success: function(res){
+                                if (res== -1){
+                                    layer.msg("添加失败", {icon: 5});
+                                }else{
+                                    table.reload('test');
+                                    layer.msg("添加成功", {icon: 6});
+                                }
+                            },
+                            error:function (){
+                                layer.msg("添加失败", {icon: 5});
+                            }
+                        });
+                        var i;
+                        for (i = 0; (i < document.forms.length); i++) {
+                            document.forms[i].reset();
+                        }
+                        layer.close(index);
+                    }
+
                 },
                 btn2:function (index) {
                     layer.close(index);
                 }
             });
+
+
+
         });
     });
 </script>
