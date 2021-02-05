@@ -129,6 +129,5 @@ public class AdminServiceImpl implements AdminService {
         }else{
             return projectMapper.insert(project);
         }
-
     }
 }
