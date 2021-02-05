@@ -165,6 +165,9 @@
             dataType: "json",
             success: function(data){
                 $('#username').text(data.username);
+            },
+            error: function () {
+                location.href = "../../html/login.html";
             }
         });
 
@@ -175,8 +178,9 @@
                     type: "POST",
                     dataType: "json",
                     success: function(){
-                        location.href="../../html/login.html"
+                        location.href = "../../html/login.html";
                     }
+
                 });
             })
         }
