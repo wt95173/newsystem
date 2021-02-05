@@ -155,7 +155,8 @@
     }).extend({
         index: 'lib/index' //主入口模块
     }).use('index',function(){
-        var $ = layui.$;
+        var $ = layui.$,
+            layer = layui.layer;
 
         $.ajax({
             url: 'http://localhost:8080/student/getUserName',
@@ -166,17 +167,22 @@
                 $('#username').text(data.username);
             }
         });
+
+        document.getElementById('temp0').onclick=function(){
+            layer.confirm('确认退出？',function () {
+                $.ajax({
+                    url: 'http://localhost:8080/logout',
+                    type: "POST",
+                    dataType: "json",
+                    success: function(){
+                        location.href="../../html/login.html"
+                    }
+                });
+            })
+        }
+
     });
 
-
-</script>
-
-
-<script type="text/javascript">
-    document.getElementById('temp0').onclick=function(){
-        sessionStorage.clear();
-        location.href="../../html/login.html"
-    }
 
 </script>
 </body>
