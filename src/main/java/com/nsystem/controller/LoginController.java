@@ -9,6 +9,8 @@ import com.nsystem.vo.LoginreturnVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.support.SessionStatus;
+
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -31,5 +33,13 @@ public class LoginController {
         }*/
         return loginService.findByName(loginVo,session);
     }
+
+    @RequestMapping("/logout")
+    public int Logout(HttpSession session, SessionStatus sessionStatus){
+        session.invalidate();
+        sessionStatus.setComplete();
+        return 1;
+    }
+
 
 }
