@@ -16,4 +16,5 @@ public class Course {
     private Date openingYear;
     private Integer term;
     private Integer priority;
+    private Integer majorId;
 }

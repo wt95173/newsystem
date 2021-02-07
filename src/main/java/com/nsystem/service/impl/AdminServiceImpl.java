@@ -4,11 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.nsystem.entity.*;
-import com.nsystem.mapper.EvaluationTableMapper;
-import com.nsystem.mapper.MajorMapper;
-import com.nsystem.mapper.ProjectMapper;
-import com.nsystem.mapper.StudentMapper;
+import com.nsystem.mapper.*;
 import com.nsystem.service.AdminService;
+import com.nsystem.vo.CourseVo;
 import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.StudentVo;
 import com.nsystem.vo.TableVo;
@@ -33,6 +31,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private ProjectMapper projectMapper;
+
+    @Autowired
+    private CourseMapper courseMapper;
 
     @Override
     public LoginVo getUserName(HttpSession session) {
@@ -129,5 +130,22 @@ public class AdminServiceImpl implements AdminService {
         }else{
             return projectMapper.insert(project);
         }
+    }
+
+    @Override
+    public TableVo<CourseVo> getCourse(Integer studentId) {
+        TableVo tableVo=new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("student_id",studentId);
+        Integer majorId=studentMapper.selectOne(wrapper).getMajorId();
+        QueryWrapper wrapper1=new QueryWrapper();
+        wrapper1.eq("major_id",majorId);
+        List<Course> courseList=courseMapper.selectList(wrapper1);
+        tableVo.setData(courseList);
+        tableVo.setCount(courseList.size());
+        return tableVo;
     }
 }

@@ -1,5 +1,6 @@
 package com.nsystem.controller;
 
+import com.nsystem.entity.Course;
 import com.nsystem.entity.LoginInformation;
 import com.nsystem.entity.Project;
 import com.nsystem.service.AdminService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -47,6 +49,11 @@ public class AdminController {
     @RequestMapping("addproject")
     public int addProject(String projectId,String projectType, String projectName){
         return adminService.addProject(projectId, projectType, projectName);
+    }
+
+    @RequestMapping("option")
+    public TableVo getCourse(Integer studentId){
+        return adminService.getCourse(studentId);
     }
 
 }
