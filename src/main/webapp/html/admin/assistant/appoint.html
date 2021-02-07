@@ -13,16 +13,24 @@
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
 <div id="show_div" style="display: none;" align="center">
-    <form method="post">
-        <div >
-            <div >
-                <div style="padding:20px">
-                    <div style="margin-left: 45px; float: left">
-                        请输入课程id：<input type="text" name="courseId" id="courseId"/>
-                    </div>
-                </div>
+    <form class="layui-form" action="">
+        <div class="layui-form-item" style="padding:20px">
+            <label class="layui-form-label">课程</label>
+            <div class="layui-input-inline">
+                <select name="courseId" id="courseId" lay-verify="required" lay-search="">
+                    <option value="">直接选择或搜索选择</option>
+                </select>
             </div>
         </div>
+<!--        <div >-->
+<!--            <div >-->
+<!--                <div style="padding:20px">-->
+<!--                    <div style="margin-left: 45px; float: left">-->
+<!--                        请输入课程id：<input type="text" name="courseId" id="courseId"/>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
     </form>
 </div>
 
@@ -39,10 +47,11 @@
 
 <script src="../../../resources/layuiadmin/layui/layui.js" charset="utf-8"></script>
 <script>
-    layui.use(['layer', 'table'], function(){
+    layui.use(['layer', 'table','form'], function(){
         var table = layui.table
             ,layer = layui.layer
-            ,$ = layui.$;
+            ,$ = layui.$,
+            form = layui.form;
 
 
         table.render({
@@ -69,45 +78,65 @@
             var data = obj.data;
 
             if(obj.event === 'appoint'){
-                layer.open({
-                    type: 1,
-                    area: ['390px', '150px'],
-                    title: '指派班级',
-                    shadeClose: false, //点击遮罩关闭
-                    content: $('#show_div'),
-                    btn:["确定","关闭"],
-                    yes: function (index) {
-                        var courseId = $("input#courseId").val();
-                        $.ajax({
-                            url: "http://localhost:8080/admin/appoint",
-                            type: "POST",
-                            data:{"studentId":data.studentId,"courseId":courseId},
-                            dataType: "json",
-                            success: function(data){
-                                if (data== -1){
-                                    layer.msg("指派失败", {icon: 5});
-                                }else{
-                                    table.reload('test');
-                                    layer.msg("指派成功", {icon: 6});
-                                }
+
+                $.ajax({
+                    type : "post",
+                    url : "http://localhost:8080/admin/option",
+                    data : {"studentId":data.studentId},
+                    dataType : "json",
+                    success : function(d) {
+                        var tmp = '<option value="">直接选择或搜索选择</option>';
+
+                        $("#courseId").html(tmp);
+                        for ( var i in d) {
+                            tmp += '<option value="' + d[i].courseId +  '">' + d[i].courseName + '</option>';
+                        }
+                        $("#courseId").html(tmp);
+                        form.render();
+
+                        layer.open({
+                            type: 1,
+                            area: ['390px', '300px'],
+                            title: '指派班级',
+                            shadeClose: false, //点击遮罩关闭
+                            content: $('#show_div'),
+                            btn:["确定","关闭"],
+                            yes: function (index) {
+                                var courseId = $("select[name='courseId']").val();
+                                $.ajax({
+                                    url: "http://localhost:8080/admin/appoint",
+                                    type: "POST",
+                                    data:{"studentId":data.studentId,"courseId":courseId},
+                                    dataType: "json",
+                                    success: function(data){
+                                        if (data== -1){
+                                            layer.msg("指派失败", {icon: 5});
+                                        }else{
+                                            table.reload('test');
+                                            layer.msg("指派成功", {icon: 6});
+                                        }
+                                    },
+                                    error:function (){
+                                        layer.msg("指派失败", {icon: 5});
+                                    }
+                                });
+                                layer.close(index);
                             },
-                            error:function (){
-                                layer.msg("指派失败", {icon: 5});
+                            btn2: function () {
+                                var i;
+                                for (i = 0; (i < document.forms.length); i++) {
+                                    document.forms[i].reset();
+                                }
                             }
-                        });
-                        var i;
-                        for (i = 0; (i < document.forms.length); i++) {
-                            document.forms[i].reset();
-                        }
-                        layer.close(index);
+                        })
+
                     },
-                    btn2: function () {
-                        var i;
-                        for (i = 0; (i < document.forms.length); i++) {
-                            document.forms[i].reset();
-                        }
+                    error:function(){
+                        layer.alert('请求失败，稍后再试', {icon: 5});
                     }
-                })
+
+                });
+
             }
         });
 
