@@ -133,10 +133,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public TableVo<CourseVo> getCourse(Integer studentId) {
-        TableVo tableVo=new TableVo();
-        tableVo.setCode(0);
-        tableVo.setMsg("");
+    public List<Course> getCourse(Integer studentId) {
 
         QueryWrapper wrapper=new QueryWrapper();
         wrapper.eq("student_id",studentId);
@@ -144,8 +141,6 @@ public class AdminServiceImpl implements AdminService {
         QueryWrapper wrapper1=new QueryWrapper();
         wrapper1.eq("major_id",majorId);
         List<Course> courseList=courseMapper.selectList(wrapper1);
-        tableVo.setData(courseList);
-        tableVo.setCount(courseList.size());
-        return tableVo;
+        return courseList;
     }
 }

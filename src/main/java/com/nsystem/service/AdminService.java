@@ -24,5 +24,5 @@ public interface AdminService {
 
     public int addProject(String projectId,String projectType, String projectName);
 
-    public TableVo<CourseVo> getCourse(Integer studentId);
+    public List<Course> getCourse(Integer studentId);
 }

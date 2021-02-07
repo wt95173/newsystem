@@ -52,7 +52,7 @@ public class AdminController {
     }
 
     @RequestMapping("option")
-    public TableVo getCourse(Integer studentId){
+    public List<Course> getCourse(Integer studentId){
         return adminService.getCourse(studentId);
     }
 
