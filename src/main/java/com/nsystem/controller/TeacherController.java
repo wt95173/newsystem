@@ -80,4 +80,21 @@ public class TeacherController {
     public TableVo getStudent2(String projectId){
         return teacherService.getStudent2(projectId);
     }
+
+    @RequestMapping("/mysciences")
+    public TableVo getMyScience(HttpSession session){
+        return teacherService.getMyScience(session);
+    }
+    @RequestMapping("/sciences")
+    public TableVo getScience(Integer page, Integer limit, HttpSession session){
+        return teacherService.getScience(page, limit, session);
+    }
+    @RequestMapping("/addscience")
+    public int addScience(int scienceId,HttpSession session){
+        return teacherService.addScience(scienceId, session);
+    }
+    @RequestMapping("/stuscience")
+    public TableVo getSStudent(int scienceId){
+        return teacherService.getSStudent(scienceId);
+    }
 }

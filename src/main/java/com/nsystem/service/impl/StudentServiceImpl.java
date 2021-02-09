@@ -39,6 +39,12 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private ProjectRecordMapper projectRecordMapper;
 
+    @Autowired
+    private StujoinMapper stujoinMapper;
+
+    @Autowired
+    private ScienceMapper scienceMapper;
+
     @Override
     public LoginVo getUserName(HttpSession session) {
         LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
@@ -234,8 +240,8 @@ public class StudentServiceImpl implements StudentService {
     public int participation(String projectId, HttpSession session) {
         LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
         Integer studentId=loginInformation.getRelativeId();
-        //QueryWrapper wrapper=new QueryWrapper();
-        //wrapper.eq("student_id",studentId);
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("student_id",studentId);
         StudentProject studentProject=new StudentProject();
         studentProject.setProjectId(projectId);
         studentProject.setStudentId(studentId);
@@ -311,5 +317,75 @@ public class StudentServiceImpl implements StudentService {
         projectRecord.setPrid(projectRecordList.get(projectRecordList.size()-1).getPrid()+1);
 
         return projectRecordMapper.insert(projectRecord);
+    }
+    @Override
+    public TableVo<Science> getScience(Integer page, Integer limit, HttpSession session) {
+        TableVo tableVo=new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
+        Integer studentId=loginInformation.getRelativeId();
+
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("student_id",studentId);
+
+        QueryWrapper wrapper1=new QueryWrapper();
+        if(stujoinMapper.selectList(wrapper)!=null){
+            List<Stujoin>  stujoinList=stujoinMapper.selectList(wrapper);
+            for(Stujoin stujoin:stujoinList){
+                wrapper1.ne("science_id",stujoin.getScienceId());
+            }
+            IPage<Science> scienceIPage=new Page<>(page,limit);
+            IPage<Science> result=scienceMapper.selectPage(scienceIPage,wrapper1);
+            List<Science> scienceList=result.getRecords();
+
+            tableVo.setCount(scienceMapper.selectCount(wrapper1));
+            tableVo.setData(scienceList);
+        }else{
+
+        }
+        return tableVo;
+    }
+
+    @Override
+    public int attend(int  scienceId, HttpSession session) {
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
+        Integer studentId=loginInformation.getRelativeId();
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("student_id",studentId);
+        Stujoin stujoin=new Stujoin();
+        stujoin.setScienceId(scienceId);
+        stujoin.setStudentId(studentId);
+        List<Stujoin> stujoinList=stujoinMapper.selectList(null);
+        stujoin.setSjId(stujoinList.get(stujoinList.size()-1).getSjId()+1);
+        return stujoinMapper.insert(stujoin);
+    }
+
+    @Override
+    public TableVo<Science> getMySciences(HttpSession session) {
+        TableVo tableVo=new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("student");
+        Integer studentId=loginInformation.getRelativeId();
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("student_id",studentId);
+
+        QueryWrapper wrapper1=new QueryWrapper();
+        if(stujoinMapper.selectList(wrapper).size()!=0){
+            List<Stujoin> stujoinList=stujoinMapper.selectList(wrapper);
+            for(Stujoin stujoin:stujoinList){
+                wrapper1.eq("science_id",stujoin.getScienceId());
+                wrapper1.or();
+            }
+            List<Science> scienceList=scienceMapper.selectList(wrapper1);
+            tableVo.setCount(scienceList.size());
+            tableVo.setData(scienceList);
+        }else{
+
+        }
+        return tableVo;
     }
 }

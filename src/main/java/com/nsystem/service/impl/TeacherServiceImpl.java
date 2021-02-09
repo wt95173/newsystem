@@ -39,7 +39,12 @@ public class TeacherServiceImpl implements TeacherService {
     private StudentProjectMapper studentProjectMapper;
     @Autowired
     private ProjectRecordMapper projectRecordMapper;
-
+    @Autowired
+    private StuexamMapper stuexamMapper;
+    @Autowired
+    private ScienceMapper scienceMapper;
+    @Autowired
+    private StujoinMapper stujoinMapper;
     @Override
     public LoginVo getUserName(HttpSession session) {
         LoginInformation loginInformation=(LoginInformation) session.getAttribute("teacher");
@@ -435,5 +440,117 @@ public class TeacherServiceImpl implements TeacherService {
         x=0;
         return tableVo;
     }
+
+    @Override
+    public TableVo<Science> getMyScience(HttpSession session) {
+        TableVo tableVo = new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("teacher");
+        Integer teacherId=loginInformation.getRelativeId();
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("teacher_id",teacherId);
+
+        QueryWrapper wrapper1=new QueryWrapper();
+        if(stuexamMapper.selectList(wrapper).size()!=0){
+            List<Stuexam> stuexamList=stuexamMapper.selectList(wrapper);
+            for(Stuexam stuexam:stuexamList){
+                wrapper1.eq("science_id",stuexam.getScienceId());
+                wrapper1.or();
+            }
+            List<Science> scienceList=scienceMapper.selectList(wrapper1);
+
+            tableVo.setCount(scienceList.size());
+            tableVo.setData(scienceList);
+        }else{
+
+        }
+        return tableVo;
+    }
+
+    @Override
+    public TableVo<Science> getScience(Integer page, Integer limit, HttpSession session) {
+        TableVo tableVo = new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("teacher");
+        Integer teacherId=loginInformation.getRelativeId();
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("teacher_id",teacherId);
+
+        QueryWrapper wrapper1=new QueryWrapper();
+
+        List<Stuexam> stuexamList=stuexamMapper.selectList(wrapper);
+        for(Stuexam stuexam:stuexamList){
+            wrapper1.ne("science_id",stuexam.getScienceId());
+        }
+        tableVo.setCount(scienceMapper.selectCount(wrapper1));
+
+        IPage<Science> scienceIPage=new Page<>(page,limit);
+        IPage<Science> result=scienceMapper.selectPage(scienceIPage,wrapper1);
+        List<Science> scienceList=result.getRecords();
+
+        tableVo.setData(scienceList);
+
+        return tableVo;
+    }
+
+    @Override
+    public int addScience(int scienceId, HttpSession session) {
+        LoginInformation loginInformation=(LoginInformation) session.getAttribute("teacher");
+        Integer teacherId=loginInformation.getRelativeId();
+        Stuexam stuexam=new Stuexam();
+        stuexam.setTeacherId(teacherId);
+        stuexam.setScienceId(scienceId);
+        List<Stuexam> stuexamList=stuexamMapper.selectList(null);
+        stuexam.setSeId(stuexamList.get(stuexamList.size()-1).getSeId()+1);
+        return stuexamMapper.insert(stuexam);
+    }
+
+    @Override
+    public TableVo<StudentVo> getSStudent(int scienceId) {
+        TableVo tableVo = new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+        int x=0;
+
+        List<StudentVo> studentVoList=new ArrayList<>();
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("science_id",scienceId);
+        List<Stujoin> stujoinList=stujoinMapper.selectList(wrapper);
+
+        QueryWrapper wrapper1=new QueryWrapper();
+
+        for(Stujoin stujoin:stujoinList){
+            wrapper1.eq("student_id",stujoin.getStudentId());
+            wrapper1.or();
+            x++;
+        }
+        if(x==0){
+
+        }else{
+            List<Student> studentList=studentMapper.selectList(wrapper1);
+            for(Student student:studentList){
+                StudentVo studentVo=new StudentVo();
+                BeanUtils.copyProperties(student,studentVo);
+                QueryWrapper wrapper3 = new QueryWrapper();
+                wrapper3.eq("major_id", student.getMajorId());
+                studentVo.setMajorName(majorMapper.selectOne(wrapper3).getMajorName());
+                if (student.getSex().equals(0)) {
+                    studentVo.setSex("男");
+                } else {
+                    studentVo.setSex("女");
+                }
+                studentVoList.add(studentVo);
+            }
+            tableVo.setCount(studentVoList.size());
+            tableVo.setData(studentVoList);
+        }
+        x=0;
+        return tableVo;
+    }
+
 
 }

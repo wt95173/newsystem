@@ -5,6 +5,7 @@ import com.nsystem.entity.LoginInformation;
 import com.nsystem.mapper.LoginInformationMapper;
 import com.nsystem.mapper.UserMapper;
 import com.nsystem.service.LoginService;
+
 import com.nsystem.util.MD5Utils;
 import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.LoginreturnVo;
@@ -27,7 +28,7 @@ public class LoginServiceImpl implements LoginService {
         wrapper.eq("relative_id",loginVo.getUsername());
         LoginreturnVo loginreturnVo=new LoginreturnVo();
         if(loginInformationMapper.selectOne(wrapper)!=null){
-            if(loginInformationMapper.selectOne(wrapper).getPassword().equals(MD5Utils.inputPassToFormPass(loginVo.getPassword()))){
+            if(loginInformationMapper.selectOne(wrapper).getPassword().equals((loginVo.getPassword()))){
                 loginreturnVo.setState(1);
                 LoginInformation loginInformation =loginInformationMapper.selectOne(wrapper);
                 switch(userMapper.selectOne(wrapper).getRole()){

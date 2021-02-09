@@ -1,5 +1,6 @@
 package com.nsystem.service.impl;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,6 +36,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private CourseMapper courseMapper;
+
+    @Autowired
+    private ScienceMapper scienceMapper;
+
 
     @Override
     public LoginVo getUserName(HttpSession session) {
@@ -106,6 +112,20 @@ public class AdminServiceImpl implements AdminService {
 
         return tableVo;
     }
+    @Override
+    public TableVo<Science> getScience(Integer page, Integer limit) {
+        TableVo tableVo=new TableVo();
+        tableVo.setCode(0);
+        tableVo.setMsg("");
+
+        IPage<Science> scienceIPage=new Page<>(page,limit);
+        IPage<Science> result=scienceMapper.selectPage(scienceIPage,null);
+        List<Science> scienceList=result.getRecords();
+        tableVo.setCount(scienceMapper.selectCount(null));
+        tableVo.setData(scienceList);
+
+        return tableVo;
+    }
 
     @Override
     public int editProject(String projectId, String projectType, String projectName) {
@@ -116,6 +136,21 @@ public class AdminServiceImpl implements AdminService {
         project.setProjectName(projectName);
         return projectMapper.updateById(project);
     }
+    @Override
+    public int editScience(int scienceId, String scienceName, String sciencePlace, Date scienceTime, String scienceTitle, String scienceImage, String scienceNote, Integer scienceType) {
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("science_id",scienceId);
+        Science science=scienceMapper.selectOne(wrapper);
+        science.setScienceName(scienceName);
+        science.setSciencePlace(sciencePlace);
+        science.setScienceTime(scienceTime);
+        science.setScienceTitle(scienceTitle);
+        science.setScienceImage(scienceImage);
+        science.setScienceNote(scienceNote);
+        science.setScienceType(scienceType);
+        return scienceMapper.updateById(science);
+    }
+
 
     @Override
     public int addProject(String projectId,String projectType, String projectName) {
@@ -143,4 +178,28 @@ public class AdminServiceImpl implements AdminService {
         List<Course> courseList=courseMapper.selectList(wrapper1);
         return courseList;
     }
+
+
+    @Override
+    public int addScience(int scienceId, String scienceName, String sciencePlace, Date scienceTime, String scienceTitle, String scienceImage, String scienceNote, Integer scienceType) {
+        Science science=new Science();
+        science.setScienceId(scienceId);
+        science.setScienceName(scienceName);
+        science.setSciencePlace(sciencePlace);
+        science.setScienceTime(scienceTime);
+        science.setScienceTitle(scienceTitle);
+        science.setScienceImage(scienceImage);
+        science.setScienceNote(scienceNote);
+        science.setScienceType(scienceType);
+
+        QueryWrapper wrapper=new QueryWrapper();
+        wrapper.eq("science_id",scienceId);
+        if(scienceMapper.selectOne(wrapper)!=null){
+            return -1;
+        }else{
+            return scienceMapper.insert(science);
+        }
+    }
+
+
 }

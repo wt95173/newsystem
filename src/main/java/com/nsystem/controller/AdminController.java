@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -54,6 +55,20 @@ public class AdminController {
     @RequestMapping("option")
     public List<Course> getCourse(Integer studentId){
         return adminService.getCourse(studentId);
+    }
+
+    @RequestMapping("/sciences")
+    public TableVo getScience(Integer page,Integer limit){
+        return adminService.getScience(page, limit);
+    }
+
+    @RequestMapping("editscience")
+    public int editScience(int scienceId, String scienceName, String sciencePlace, Date scienceTime, String scienceTitle, String scienceImage, String scienceNote, Integer scienceType){
+        return adminService.editScience( scienceId,  scienceName, sciencePlace, scienceTime,scienceTitle,scienceImage,scienceNote, scienceType);
+    }
+    @RequestMapping("addscience")
+    public int addScience(int scienceId, String scienceName, String sciencePlace, Date scienceTime,String scienceTitle,String scienceImage,String scienceNote,Integer scienceType){
+        return adminService.addScience(scienceId,scienceName,sciencePlace,scienceTime,scienceTitle,scienceImage,scienceNote,scienceType);
     }
 
 }
