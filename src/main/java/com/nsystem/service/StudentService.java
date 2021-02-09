@@ -3,6 +3,7 @@ package com.nsystem.service;
 import com.nsystem.entity.Choice;
 import com.nsystem.entity.Project;
 import com.nsystem.entity.ProjectRecord;
+import com.nsystem.entity.Science;
 import com.nsystem.vo.CourseVo;
 import com.nsystem.vo.LoginVo;
 import com.nsystem.vo.TableVo;
@@ -27,4 +28,10 @@ public interface StudentService {
     public TableVo<ProjectRecord> getRecord(Integer page,Integer limit,String projectId,HttpSession session);
 
     public int setRecord(String projectId,String recordTitle,String recordInfo,String recordResolve,HttpSession session);
+
+    public TableVo<Science> getScience(Integer page, Integer limit, HttpSession session);
+
+    public int attend(int  scienceId, HttpSession session);
+
+    public TableVo<Science> getMySciences(HttpSession session);
 }

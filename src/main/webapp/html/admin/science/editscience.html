@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" href="../../../resources/layuiadmin/layui/css/layui.css" media="all">
+    <title>编辑学术活动</title>
+</head>
+<body>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<div id="show_div" style="display: none;" align="center">
+    <div style="padding:20px">
+        <form name="project" class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">学术活动id：</label>
+                <div class="layui-input-block">
+                    <input type="number" name="scienceId" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">活动名称：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="scienceName" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动地点：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="sciencePlace" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动时间：</label>
+                <div class="layui-input-block">
+                    <input type="date" name="scienceDate" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动主题：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="scienceTitle" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动图片：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="scienceImage" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动简介：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="scienceNote" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动类型：</label>
+                <div class="layui-input-block">
+                    <input type="number" name="scienceType" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="show_div2" style="display: none;" align="center">
+    <div style="padding:20px">
+        <form name="project" lay-filter="project" class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">活动名称：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="scienceName" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动地点：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="sciencePlace" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动时间：</label>
+                <div class="layui-input-block">
+                    <input type="date" name="scienceDate" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动主题：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="scienceTitle" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动图片：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="scienceImage" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动简介：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="scienceNote" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">活动类型：</label>
+                <div class="layui-input-block">
+                    <input type="number" name="scienceType" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button id="tag" class="layui-btn  layui-btn-warm btn-add layui-btn-sm" lay-event="add"> 添加活动</button>
+    </div>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+
+<script src="../../../resources/layuiadmin/layui/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['layer', 'table','form'], function(){
+        var table = layui.table
+            ,layer = layui.layer
+            ,$ = layui.$
+            ,form = layui.form;
+
+        table.render({
+            elem: '#test'
+            ,url:'http://localhost:8080/admin/sciences'
+            ,toolbar: '#toolbarDemo'
+            ,unresize:true
+            ,cols: [[
+                {field:'scienceId', title:'学术活动id', fixed: 'left'}
+                ,{field:'scienceName', title:'活动名称'}
+                ,{field:'sciencePlace', title:'活动地点'}
+                ,{field:'scienceTime', title:'活动时间'}
+                ,{field:'scienceTitle', title:'活动主题'}
+                ,{field:'scienceImage', title:'活动图片'}
+                ,{field:'scienceNote', title:'活动简介'}
+                ,{field:'scienceType', title:'活动类别'}
+                ,{filed:'right', align:'center', toolbar: '#barDemo'}
+            ]]
+            ,page:{				//分页设置
+                limit:5,		//默认每一页显示数量
+                limits:[5,10,20,30,40,50]		//可选择每页显示的数量
+            }
+        });
+
+        $("#tag").on("click",function () {
+            layer.open({
+                type: 1,
+                title: '添加活动',
+                shadeClose: false, //点击遮罩关闭
+                content: $('#show_div'),
+                btn:["添加","关闭"],
+                yes: function (index,layero) {
+                    var scienceId = $("input[name='scienceId']").val();
+                    var scienceName = $("input[name='scienceName']").val();
+                    var sciencePlace = $("input[name='sciencePlace']").val();
+                    var scienceDate = $("input[name='scienceDate']").val();
+                    var scienceTitle = $("input[name='scienceTitle']").val();
+                    var scienceImage = $("input[name='scienceImage']").val();
+                    var scienceNote = $("input[name='scienceNote']").val();
+                    var scienceType = $("input[name='scienceType']").val();
+
+                    $.ajax({
+                        url: "http://localhost:8080/admin/addscience",
+                        type: "POST",
+                        data:{"scienceId":scienceId, "scienceName":scienceName, "sciencePlace":sciencePlace,
+                            "scienceDate":scienceDate,"scienceTitle":scienceTitle,"scienceImage":scienceImage,"scienceNote":scienceNote,
+                            "scienceType":scienceType},
+                        dataType: "json",
+                        success: function(res){
+                            if (res== -1){
+                                layer.msg("添加失败", {icon: 5});
+                            }else{
+                                table.reload('test');
+                                layer.msg("添加成功", {icon: 6});
+                            }
+                        },
+                        error:function (){
+                            layer.msg("添加失败", {icon: 5});
+                        }
+                    });
+                    var i;
+                    for (i = 0; (i < document.forms.length); i++) {
+                        document.forms[i].reset();
+                    }
+                    layer.close(index);
+                },
+                btn2:function (index) {
+                    var i;
+                    for (i = 0; (i < document.forms.length); i++) {
+                        document.forms[i].reset();
+                    }
+                    layer.close(index);
+                }
+            })
+        })
+
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+
+            if(obj.event === 'edit'){
+
+                form.val("science",{
+                    "scienceName": data.scienceName,
+                    "sciencePlace": data.sciencePlace,
+                    "scienceDate": data.scienceDate,
+                    "scienceTitle": data.scienceTitle,
+                    "scienceImage": data.scienceImage,
+                    "scienceNote": data.scienceNote,
+                    "scienceType": data.sciencePlace,
+                });
+
+                layer.open({
+                    type: 1,
+                    title: '编辑活动',
+                    shadeClose: false, //点击遮罩关闭
+                    content: $('#show_div2'),
+                    btn:["编辑","关闭"],
+                    yes: function (index,layero) {
+                        var scienceName = $("input[name='scienceName']").val();
+                        var sciencePlace = $("input[name='sciencePlace']").val();
+                        var scienceDate = $("input[name='scienceDate']").val();
+                        var scienceTitle = $("input[name='scienceTitle']").val();
+                        var scienceImage = $("input[name='scienceImage']").val();
+                        var scienceNote = $("input[name='scienceNote']").val();
+                        var scienceType = $("input[name='scienceType']").val();
+
+                        $.ajax({
+                            url: "http://localhost:8080/admin/editscience",
+                            type: "POST",
+                            data:{"scienceId":data.scienceId, "scienceName":scienceName, "sciencePlace":sciencePlace,
+                                "scienceDate":scienceDate,"scienceTitle":scienceTitle,"scienceImage":scienceImage,"scienceNote":scienceNote,
+                                "scienceType":scienceType},
+                            dataType: "json",
+                            success: function(res){
+                                if (res== -1){
+                                    layer.msg("编辑失败", {icon: 5});
+                                }else{
+                                    table.reload('test');
+                                    layer.msg("编辑成功", {icon: 6});
+                                }
+                            },
+                            error:function (){
+                                layer.msg("编辑失败", {icon: 5});
+                            }
+                        });
+                        var i;
+                        for (i = 0; (i < document.forms.length); i++) {
+                            document.forms[i].reset();
+                        }
+                        layer.close(index);
+                    },
+                    btn2:function (index) {
+                        var i;
+                        for (i = 0; (i < document.forms.length); i++) {
+                            document.forms[i].reset();
+                        }
+                        layer.close(index);
+                    }
+                })
+            }
+
+        })
+
+    });
+</script>
+
+</body>
+</html>

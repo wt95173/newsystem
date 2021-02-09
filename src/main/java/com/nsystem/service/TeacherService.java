@@ -1,6 +1,7 @@
 package com.nsystem.service;
 
 import com.nsystem.entity.Project;
+import com.nsystem.entity.Science;
 import com.nsystem.vo.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,5 +32,11 @@ public interface TeacherService {
 
     public TableVo<StudentVo> getStudent2(String projectId);
 
+    public TableVo<Science> getMyScience(HttpSession session);
 
+    public TableVo<Science> getScience(Integer page, Integer limit, HttpSession session);
+
+     public int addScience(int scienceId, HttpSession session);
+
+    public TableVo<StudentVo> getSStudent(int scienceId);
 }

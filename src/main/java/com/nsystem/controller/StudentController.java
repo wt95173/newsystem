@@ -66,5 +66,17 @@ public class StudentController {
     public int setRecord(String projectId, String recordTitle, String recordInfo, String recordResolve,HttpSession session){
         return studentService.setRecord(projectId, recordTitle, recordInfo, recordResolve, session);
     }
+    @RequestMapping("/sciences")
+    public TableVo getSciences(Integer page, Integer limit,HttpSession session){
+        return studentService.getScience(page,limit,session);
+    }
+    @RequestMapping("/attend")
+    public int attend(int scienceId,HttpSession session){
+        return studentService.attend(scienceId, session);
+    }
+    @RequestMapping("/mysciences")
+    public TableVo getMySciences(HttpSession session){
+        return studentService.getMySciences(session);
+    }
 
 }
