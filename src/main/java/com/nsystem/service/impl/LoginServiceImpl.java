@@ -28,7 +28,7 @@ public class LoginServiceImpl implements LoginService {
         wrapper.eq("relative_id",loginVo.getUsername());
         LoginreturnVo loginreturnVo=new LoginreturnVo();
         if(loginInformationMapper.selectOne(wrapper)!=null){
-            if(loginInformationMapper.selectOne(wrapper).getPassword().equals(MD5Utils.inputPassToFormPass(loginVo.getPassword()))){
+            if(loginInformationMapper.selectOne(wrapper).getPassword().equals((loginVo.getPassword()))){
                 loginreturnVo.setState(1);
                 LoginInformation loginInformation =loginInformationMapper.selectOne(wrapper);
                 switch(userMapper.selectOne(wrapper).getRole()){
